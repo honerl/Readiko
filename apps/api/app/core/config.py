@@ -5,6 +5,10 @@ class Settings(BaseSettings):
     app_env: str = "dev"
     app_name: str = "readiko-api"
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    supabase_url: str = ""
+    supabase_anon_key: str = ""
+    supabase_service_role_key: str | None = None
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="",

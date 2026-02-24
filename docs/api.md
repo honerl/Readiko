@@ -27,6 +27,7 @@ apps/api/
     main.py              → FastAPI entry point
     core/
       config.py          → Environment + settings
+      supabase.py        → Supabase client
     api/
       router.py          → Central router
       routes/

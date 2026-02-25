@@ -1,19 +1,37 @@
-import { useEffect, useState } from "react";
-import { checkHealth } from "./services/api.js";
+import React, { useState } from 'react';
+import Login from './Login';
+import Register from './Register';
 
 function App() {
-  const [status, setStatus] = useState("Checking...");
+  const [view, setView] = useState('login');
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    checkHealth()
-      .then((data) => setStatus(data.ok ? "ok" : "not ok"))
-      .catch(() => setStatus("Backend not connected"));
-  }, []);
+  const handleAuthSuccess = (userData) => {
+    setUser(userData);
+    setView('dashboard');
+  };
 
   return (
-    <div>
-      <h1>ReadIKo</h1>
-      <p>Backend Status: {status}</p>
+    <div className="app-container">
+      {view === 'login' && (
+        <Login 
+          onSwitch={() => setView('register')} 
+          onLoginSuccess={handleAuthSuccess} 
+        />
+      )}
+
+      {view === 'register' && (
+        <Register 
+          onSwitch={() => setView('login')} 
+        />
+      )}
+
+      {view === 'dashboard' && (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h1>Welcome to ReadiKo, {user?.email}!</h1>
+          <button onClick={() => setView('login')}>Logout</button>
+        </div>
+      )}
     </div>
   );
 }

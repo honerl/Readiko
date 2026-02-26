@@ -1,38 +1,45 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Login';
 import Register from './Register';
+import StudentHomepage from './StudentHomepage';
 
 function App() {
-  const [view, setView] = useState('login');
   const [user, setUser] = useState(null);
 
+  // Success handler now handles data and redirect logic is handled by the router
   const handleAuthSuccess = (userData) => {
     setUser(userData);
-    setView('dashboard');
   };
 
   return (
-    <div className="app-container">
-      {view === 'login' && (
-        <Login 
-          onSwitch={() => setView('register')} 
-          onLoginSuccess={handleAuthSuccess} 
-        />
-      )}
+    <Router>
+      <div className="app-container">
+        <Routes>
+          {/* 1. Login Route */}
+          <Route 
+            path="/login" 
+            element={
+              user ? <Navigate to="/home" /> : <Login onLoginSuccess={handleAuthSuccess} />
+            } 
+          />
 
-      {view === 'register' && (
-        <Register 
-          onSwitch={() => setView('login')} 
-        />
-      )}
+          {/* 2. Register Route */}
+          <Route path="/register" element={<Register />} />
 
-      {view === 'dashboard' && (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <h1>Welcome to ReadiKo, {user?.email}!</h1>
-          <button onClick={() => setView('login')}>Logout</button>
-        </div>
-      )}
-    </div>
+          {/* 3. Student Home Route (Protected) */}
+          <Route 
+            path="/home" 
+            element={
+              user ? <StudentHomepage user={user} /> : <Navigate to="/login" />
+            } 
+          />
+
+          {/* 4. Default: Redirect to login if path doesn't exist */}
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

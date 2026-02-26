@@ -4,7 +4,7 @@ from .enums import UserRole
 
 class UserBase(BaseModel):
     fname: str
-    lnmae: str
+    lname: str
     birthday: date
     email: EmailStr
     role: UserRole

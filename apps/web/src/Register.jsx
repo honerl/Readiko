@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './App.css';
 
-const Register = ({ onSwitch }) => {
+const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -11,14 +14,40 @@ const Register = ({ onSwitch }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Client-side validation
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    console.log('Registering user:', formData);
-    // Add backend fetch logic here
+
+    console.log('Registering user:', formData.email);
+
+    try {
+      // Replace with your actual FastAPI registration endpoint
+      const response = await fetch('http://localhost:8000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Account created successfully! Please sign in.");
+        navigate('/login'); // Move to login page after success
+      } else {
+        alert(data.detail || "Registration failed.");
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert("Cannot connect to server.");
+    }
   };
 
   return (
@@ -28,15 +57,47 @@ const Register = ({ onSwitch }) => {
         <h2 style={styles.title}>Sign Up</h2>
         
         <form onSubmit={handleSubmit} style={styles.form}>
-          <input type="email" name="email" placeholder="Email" onChange={handleChange} className='input' required  style={styles.input}/>
-          <input type="password" name="password" placeholder="Password" onChange={handleChange} className='input' style={styles.input} required />
-          <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} className='input' style={styles.input} required />
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="Email" 
+            value={formData.email}
+            onChange={handleChange} 
+            className='input' 
+            style={styles.input}
+            required 
+          />
+          <input 
+            type="password" 
+            name="password" 
+            placeholder="Password" 
+            value={formData.password}
+            onChange={handleChange} 
+            className='input' 
+            style={styles.input} 
+            required 
+          />
+          <input 
+            type="password" 
+            name="confirmPassword" 
+            placeholder="Confirm Password" 
+            value={formData.confirmPassword}
+            onChange={handleChange} 
+            className='input' 
+            style={styles.input} 
+            required 
+          />
           
           <button type="submit" className='btn_primary'>REGISTER</button>
         </form>
 
         <p style={styles.text}>Already have an account?</p>
-        <button onClick={onSwitch} className="btn_secondary">LOGIN</button>
+        <button 
+          onClick={() => navigate('/login')} 
+          className="btn_secondary"
+        >
+          LOGIN
+        </button>
       </div>
     </div>
   );
@@ -48,8 +109,7 @@ const styles = {
   logo: { color: '#153204', margin: '70px 0 30px 0', fontSize: '40px'},
   input: { marginBottom: '15px'},
   title: { fontSize: '25px', color: '#6C530E', marginBottom: '30px', alignSelf: 'flex-start', paddingLeft: '62px', fontWeight: '500' },
-  form: { display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '15px' },
-  linkTextSmall: { fontSize: '0.8rem', color: '#6C530E', cursor: 'pointer', margin: '-5px 0 20px 0', fontWeight: '500' },
+  form: { display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '15px', width: '100%' },
   text: { margin: '30px 0 30px 0', fontSize: '0.9rem', color: '#555', fontWeight: '500' },
 };
 

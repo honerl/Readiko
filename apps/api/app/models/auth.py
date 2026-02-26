@@ -5,6 +5,11 @@ class RegisterRequest(BaseModel):
     password: str
     confirm_password: str
 
+class RegisterResponse(BaseModel):
+    message: str
+    user_id: str
+    email: str
+
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str

@@ -69,9 +69,9 @@ function App() {
           {/* 3. Student Home Route (Protected) */}
           <Route 
             path="/home" 
-              element={
+            element={
               user ? <StudentHomepage user={user} /> : <Navigate to="/login" />
-              } 
+            } 
           />
 
           {/* 4. Default: Redirect to login if path doesn't exist */}

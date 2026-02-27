@@ -11,12 +11,25 @@ function App() {
 
   // synchronize with supabase session when the app loads
   useEffect(() => {
-    const session = supabase.auth.getSession();
-    setUser(session?.user ?? null);
-
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('auth event', event);
+    // Get initial session
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
+    };
+    getInitialSession();
+
+    // Listen for auth state changes
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('auth event:', event);
+      
+      // Update user state based on event
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+        setUser(null);
+      } else if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
     });
 
     return () => {

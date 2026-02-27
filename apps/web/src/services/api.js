@@ -5,15 +5,29 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 // helper that automatically attaches the current supabase access token
 export async function apiFetch(path, options = {}) {
-  const session = await supabase.auth.getSession();
+  // Make sure session is refreshed if needed
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  const token = session?.access_token;
+  console.log(`[apiFetch] ${options.method || 'GET'} ${path}`, {
+    hasToken: !!token,
+    tokenPreview: token ? `${token.substring(0, 20)}...` : 'none',
+    sessionExpires: session?.expires_at
+  });
+
   const headers = {
     ...(options.headers || {}),
-    ...(session?.access_token
-      ? { Authorization: `Bearer ${session.access_token}` }
-      : {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
   const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  
+  if (!res.ok) {
+    const contentType = res.headers.get('content-type');
+    const body = contentType?.includes('application/json') ? await res.json() : await res.text();
+    console.error(`[apiFetch] Error: ${res.status}`, body);
+  }
+  
   return res;
 }
 

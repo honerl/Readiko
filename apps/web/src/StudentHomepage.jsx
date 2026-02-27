@@ -10,13 +10,25 @@ const StudentHomepage = ({ user }) => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
+        console.log('[StudentHomepage] Fetching classes for user:', user?.id);
         const response = await apiFetch(
           `/classes?student_id=${user?.id}`
         );
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+          console.error('[StudentHomepage] Classes fetch failed:', {
+            status: response.status,
+            error: errorData
+          });
+          throw new Error(`Failed to load classes: ${errorData.detail || response.statusText}`);
+        }
+        
         const data = await response.json();
+        console.log('[StudentHomepage] Classes loaded:', data);
         setClasses(data);
       } catch (err) {
-        console.error("Failed to load classes", err);
+        console.error("[StudentHomepage] Failed to load classes", err);
       } finally {
         setLoading(false);
       }

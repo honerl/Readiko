@@ -1,20 +1,19 @@
 from pydantic import BaseModel, EmailStr
-from datetime import date
 from .enums import UserRole
 
 class UserBase(BaseModel):
     fname: str
     lname: str
-    birthday: date
     email: EmailStr
     role: UserRole
 
 class User(UserBase):
-    uid: int
+    uid: str
+
 
 class UserCreate(UserBase):
-    """Body when creating a user (uid might be generate by auth)."""
-    pass
+    """Body when creating a user (uid is provided from auth)."""
+    uid: str
 
 class UserUpdate(BaseModel):
     fname: str | None = None

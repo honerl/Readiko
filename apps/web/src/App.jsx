@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Login';
 import Register from './Register';
+import RoleSelection from './RoleSelection';
 import StudentHomepage from './StudentHomepage';
+import { supabase } from './services/supabaseClient';
 
 function App() {
   const [user, setUser] = useState(null);
 
-  // Success handler now handles data and redirect logic is handled by the router
+  // synchronize with supabase session when the app loads
+  useEffect(() => {
+    const session = supabase.auth.getSession();
+    setUser(session?.user ?? null);
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('auth event', event);
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, []);
+
+  // handler that child components can call when they obtain the user
   const handleAuthSuccess = (userData) => {
     setUser(userData);
   };
@@ -26,6 +43,9 @@ function App() {
 
           {/* 2. Register Route */}
           <Route path="/register" element={<Register />} />
+
+          {/* Role selection after signup */}
+          <Route path="/role" element={<RoleSelection />} />
 
           {/* 3. Student Home Route (Protected) */}
           <Route 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from './services/api';
 
 const StudentHomepage = ({ user }) => {
   const [classes, setClasses] = useState([]);
@@ -9,7 +10,9 @@ const StudentHomepage = ({ user }) => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/classes?student_id=${user?.id}`);
+        const response = await apiFetch(
+          `/classes?student_id=${user?.id}`
+        );
         const data = await response.json();
         setClasses(data);
       } catch (err) {
@@ -25,7 +28,7 @@ const StudentHomepage = ({ user }) => {
     const classCode = prompt("Enter Class Code:");
     if (!classCode) return;
     try {
-      const response = await fetch('http://localhost:8000/join-class', {
+      const response = await apiFetch('/join-class', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ student_id: user.id, class_code: classCode })

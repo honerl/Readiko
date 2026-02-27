@@ -1,7 +1,8 @@
 from fastapi import APIRouter
-from app.api.routes import health, dbdebug, auth
+from app.api.routes import health, dbdebug, auth, classroom
 
 api_router = APIRouter()
 api_router.include_router(health.router)
 api_router.include_router(auth.router)
 api_router.include_router(dbdebug.router)
+api_router.include_router(classroom.router)

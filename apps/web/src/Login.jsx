@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
+import { supabase } from './services/supabaseClient';
 
 const Login = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
@@ -16,26 +17,24 @@ const Login = ({ onLoginSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    console.log('Attempting login for:', formData.email);
+    console.log('Attempting supabase login:', formData.email);
 
     try {
-      const response = await fetch('http://localhost:8000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
       });
 
-      const data = await response.json();
+      if (error) throw error;
 
-      if (response.ok) {
-        onLoginSuccess(data.user); 
-        navigate('/home'); 
-      } else {
-        alert(data.detail || 'Login failed. Please check your credentials.');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      alert('Cannot connect to the backend server.');
+      // when login succeeds the session will be stored in
+      // localStorage and supabase.auth.getSession() will return it.  We
+      // can also pass the user back to the parent to show UI.
+      onLoginSuccess(data.user);
+      navigate('/home');
+    } catch (err) {
+      console.error('Supabase sign‑in error:', err);
+      alert(err.message || 'Login failed. Please check your credentials.');
     }
   };
 

@@ -14,40 +14,22 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Client-side validation
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      alert('Passwords do not match!');
       return;
     }
 
-    console.log('Registering user:', formData.email);
-
-    try {
-      // Replace with your actual FastAPI registration endpoint
-      const response = await fetch('http://localhost:8000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Account created successfully! Please sign in.");
-        navigate('/login'); // Move to login page after success
-      } else {
-        alert(data.detail || "Registration failed.");
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
-      alert("Cannot connect to server.");
-    }
+    // Pass email and password to RoleSelection via state
+    navigate('/role', {
+      state: {
+        email: formData.email,
+        password: formData.password,
+      },
+    });
   };
 
   return (
@@ -55,45 +37,47 @@ const Register = () => {
       <div style={styles.card}>
         <h1 style={styles.logo}>ReadiKo</h1>
         <h2 style={styles.title}>Sign Up</h2>
-        
+
         <form onSubmit={handleSubmit} style={styles.form}>
-          <input 
-            type="email" 
-            name="email" 
-            placeholder="Email" 
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
             value={formData.email}
-            onChange={handleChange} 
-            className='input' 
+            onChange={handleChange}
+            className="input"
             style={styles.input}
-            required 
+            required
           />
-          <input 
-            type="password" 
-            name="password" 
-            placeholder="Password" 
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
             value={formData.password}
-            onChange={handleChange} 
-            className='input' 
-            style={styles.input} 
-            required 
+            onChange={handleChange}
+            className="input"
+            style={styles.input}
+            required
           />
-          <input 
-            type="password" 
-            name="confirmPassword" 
-            placeholder="Confirm Password" 
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
             value={formData.confirmPassword}
-            onChange={handleChange} 
-            className='input' 
-            style={styles.input} 
-            required 
+            onChange={handleChange}
+            className="input"
+            style={styles.input}
+            required
           />
-          
-          <button type="submit" className='btn_primary'>REGISTER</button>
+
+          <button type="submit" className="btn_primary">
+            REGISTER
+          </button>
         </form>
 
         <p style={styles.text}>Already have an account?</p>
-        <button 
-          onClick={() => navigate('/login')} 
+        <button
+          onClick={() => navigate('/login')}
           className="btn_secondary"
         >
           LOGIN

@@ -3,6 +3,13 @@ import ClassDetail from './ClassDetail';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
 
+// simple module‑level memo to avoid duplicate network requests when
+// React StrictMode mounts/unmounts the component. the ref inside the
+// component is reset on unmount, but this variable persists across
+// re‑mounts for the lifetime of the page. we also clear it when the
+// user logs out so a future login with the same id will re‑fetch.
+let lastStudentIdFetched = null;
+
 const StudentHomepage = ({ user }) => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,34 +17,52 @@ const StudentHomepage = ({ user }) => {
   const [activeSidebarItem, setActiveSidebarItem] = useState('learn');
   const [currentClass, setCurrentClass] = useState(null);
 
+  // whenever the user toggles away we want to forget the previous
+  // fetch so a future login with the same id will trigger a request.
   useEffect(() => {
+    if (!user) {
+      lastStudentIdFetched = null;
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    // if we already fetched for this student during this session, skip.
+    if (lastStudentIdFetched === user.id) {
+      console.log('[StudentHomepage] skipping fetch – already loaded');
+      // the component may have been remounted so loading reset to true
+      setLoading(false);
+      return;
+    }
+
+    lastStudentIdFetched = user.id;
+
     const fetchClasses = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/classes?student_id=${user?.id}`);
+        console.log('[StudentHomepage] Fetching classes for user:', user.id);
+        const response = await apiFetch(`/classes?student_id=${user.id}`);
+
         if (!response.ok) {
-          setClasses([]);
-          return;
+          const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+          console.error('[StudentHomepage] Classes fetch failed:', {
+            status: response.status,
+            error: errorData
+          });
+          throw new Error(`Failed to load classes: ${errorData.detail || response.statusText}`);
         }
-        let data = [];
-        try {
-          data = await response.json();
-        } catch (err) {
-          data = [];
-        }
-        setClasses(Array.isArray(data) ? data : []);
+
+        const data = await response.json();
+        console.log('[StudentHomepage] Classes loaded:', data);
+        setClasses(data);
       } catch (err) {
-        console.error("Failed to load classes", err);
-        setClasses([]);
+        console.error('[StudentHomepage] Failed to load classes', err);
       } finally {
         setLoading(false);
       }
     };
-    if (user?.id) {
-      fetchClasses();
-    } else {
-      setLoading(false);
-      setClasses([]);
-    }
+
+    fetchClasses();
   }, [user?.id]);
 
   const handleJoinClass = async () => {

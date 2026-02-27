@@ -11,12 +11,31 @@ function App() {
 
   // synchronize with supabase session when the app loads
   useEffect(() => {
-    const session = supabase.auth.getSession();
-    setUser(session?.user ?? null);
-
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('auth event', event);
+    // Get initial session
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
+    };
+    getInitialSession();
+
+    // Listen for auth state changes
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('auth event:', event);
+      
+      // Update user state based on event
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+        setUser(null);
+      } else if (session?.user) {
+        // avoid bumping the state if the id hasn't actually changed;
+        // Supabase sometimes emits INITIAL_SESSION after SIGNED_IN,
+        // which leads to two identical user objects and a double
+        // render downstream.
+        if (session.user.id !== user?.id) {
+          setUser(session.user);
+        }
+      } else {
+        setUser(null);
+      }
     });
 
     return () => {

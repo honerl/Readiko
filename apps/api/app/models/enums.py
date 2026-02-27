@@ -1,9 +1,9 @@
 from enum import Enum
 
 class UserRole(str, Enum):
-    student = "Student"
-    teacher = "Teacher"
-    parent = "Parent"
+    student = "student"
+    teacher = "teacher"
+    parent = "parent"
 
 class UnderstandingLevel(str, Enum):
     beginner = "Beginner"

@@ -1,20 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from './services/api';
 
+// simple module‑level memo to avoid duplicate network requests when
+// React StrictMode mounts/unmounts the component. the ref inside the
+// component is reset on unmount, but this variable persists across
+// re‑mounts for the lifetime of the page. we also clear it when the
+// user logs out so a future login with the same id will re‑fetch.
+let lastStudentIdFetched = null;
+
 const StudentHomepage = ({ user }) => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   // NEW: State to track which tab is selected
   const [activeTab, setActiveTab] = useState('classes');
 
+  // whenever the user toggles away we want to forget the previous
+  // fetch so a future login with the same id will trigger a request.
   useEffect(() => {
+    if (!user) {
+      lastStudentIdFetched = null;
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    // if we already fetched for this student during this session, skip.
+    if (lastStudentIdFetched === user.id) {
+      console.log('[StudentHomepage] skipping fetch – already loaded');
+      // the component may have been remounted so loading reset to true
+      setLoading(false);
+      return;
+    }
+
+    lastStudentIdFetched = user.id;
+
     const fetchClasses = async () => {
       try {
-        console.log('[StudentHomepage] Fetching classes for user:', user?.id);
-        const response = await apiFetch(
-          `/classes?student_id=${user?.id}`
-        );
-        
+        console.log('[StudentHomepage] Fetching classes for user:', user.id);
+        const response = await apiFetch(`/classes?student_id=${user.id}`);
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
           console.error('[StudentHomepage] Classes fetch failed:', {
@@ -23,17 +48,18 @@ const StudentHomepage = ({ user }) => {
           });
           throw new Error(`Failed to load classes: ${errorData.detail || response.statusText}`);
         }
-        
+
         const data = await response.json();
         console.log('[StudentHomepage] Classes loaded:', data);
         setClasses(data);
       } catch (err) {
-        console.error("[StudentHomepage] Failed to load classes", err);
+        console.error('[StudentHomepage] Failed to load classes', err);
       } finally {
         setLoading(false);
       }
     };
-    if (user?.id) fetchClasses();
+
+    fetchClasses();
   }, [user?.id]);
 
   const handleJoinClass = async () => {

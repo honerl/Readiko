@@ -26,7 +26,13 @@ function App() {
       if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         setUser(null);
       } else if (session?.user) {
-        setUser(session.user);
+        // avoid bumping the state if the id hasn't actually changed;
+        // Supabase sometimes emits INITIAL_SESSION after SIGNED_IN,
+        // which leads to two identical user objects and a double
+        // render downstream.
+        if (session.user.id !== user?.id) {
+          setUser(session.user);
+        }
       } else {
         setUser(null);
       }

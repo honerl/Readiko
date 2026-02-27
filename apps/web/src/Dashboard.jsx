@@ -10,51 +10,51 @@ const Dashboard = ({
   onJoinClass
 }) => {
   const styles = {
-    title: { 
-      fontSize: '52px', 
-      color: '#6C530E', 
-      marginBottom: '30px', 
+    title: {
+      fontSize: '52px',
+      color: '#6C530E',
+      marginBottom: '30px',
       marginTop: '0px',
-      fontWeight: 'bold' 
+      fontWeight: 'bold'
     },
-    tabContainer: { 
-      display: 'flex', 
-      gap: '160px', 
+    tabContainer: {
+      display: 'flex',
+      gap: '160px',
       marginBottom: '20px',
       alignItems: 'center',
       textAlign: 'center',
       justifyContent: 'center',
       width: '100%'
     },
-    activeTab: { 
-      background: 'none', 
-      border: 'none', 
+    activeTab: {
+      background: 'none',
+      border: 'none',
       borderRadius: '0px',
-      fontSize: '16px', 
-      fontWeight: 'bold', 
-      color: '#EE6A60', 
-      cursor: 'pointer', 
+      fontSize: '16px',
+      fontWeight: 'bold',
+      color: '#EE6A60',
+      cursor: 'pointer',
       paddingBottom: '8px',
       outline: 'none',
       boxShadow: 'none',
       borderBottom: '3px solid #EE6A60'
     },
-    inactiveTab: { 
-      background: 'none', 
-      border: 'none', 
-      fontSize: '16px', 
-      color: '#d4c4a8', 
-      cursor: 'pointer', 
+    inactiveTab: {
+      background: 'none',
+      border: 'none',
+      fontSize: '16px',
+      color: '#d4c4a8',
+      cursor: 'pointer',
       paddingBottom: '8px',
       outline: 'none',
       boxShadow: 'none'
     },
-    contentLayout: { 
-      display: 'flex', 
-      gap: '80px', 
-      width: '100%', 
+    contentLayout: {
+      display: 'flex',
+      gap: '80px',
+      width: '100%',
       height: '100%',
-      alignItems: 'flex-start' 
+      alignItems: 'flex-start'
     },
     leftColumn: {
       flex: 1,
@@ -68,17 +68,17 @@ const Dashboard = ({
       overflow: 'hidden'
     },
 
-    classScrollArea: { 
+    classScrollArea: {
       flex: 1,
-      backgroundColor: '#FFFDF5', 
+      backgroundColor: '#FFFDF5',
       borderRadius: '20px',
       marginBottom: '10px',
-      padding: '35px 30px', 
-      display: 'flex', 
+      padding: '35px 30px',
+      display: 'flex',
       width: 'calc(100% - 80px)',
       height: '100%',
-      flexDirection: 'column', 
-      gap: '40px', 
+      flexDirection: 'column',
+      gap: '40px',
       overflowY: 'auto',
       overflowX: 'hidden',
       scrollbarWidth: 'none',
@@ -86,10 +86,10 @@ const Dashboard = ({
       border: '1px solid #BAAAAA',
       boxShadow: '0 4px 4px #BAAAAA',
     },
-    classCard: { 
-      backgroundColor: '#fcf0c8', 
-      padding: '25px', 
-      borderRadius: '20px', 
+    classCard: {
+      backgroundColor: '#fcf0c8',
+      padding: '25px',
+      borderRadius: '20px',
       border: '1px solid #e0d090',
       cursor: 'pointer'
     },
@@ -102,26 +102,26 @@ const Dashboard = ({
       textAlign: 'left',
       marginTop: '0px'
     },
-    desc: { 
-      fontSize: '16px', 
-      color: '#7a6b4a', 
+    desc: {
+      fontSize: '16px',
+      color: '#7a6b4a',
       lineHeight: '1.4',
-      marginBottom: '15px' 
+      marginBottom: '15px'
     },
-    teacherName: { 
-      textAlign: 'right', 
-      fontWeight: 'bold', 
-      color: '#6C530E', 
+    teacherName: {
+      textAlign: 'right',
+      fontWeight: 'bold',
+      color: '#6C530E',
       fontSize: '14px',
       fontStyle: 'italic'
     },
-    joinBtn: { 
+    joinBtn: {
       border: '2px dashed #8d7b5f',
-      padding: '60px', 
-      borderRadius: '20px', 
-      backgroundColor: '#EEE7D7', 
-      cursor: 'pointer', 
-      fontSize: '18px', 
+      padding: '60px',
+      borderRadius: '20px',
+      backgroundColor: '#EEE7D7',
+      cursor: 'pointer',
+      fontSize: '18px',
       color: '#8d7b5f',
       transition: '0.2s',
       outline: 'none',
@@ -192,33 +192,36 @@ const Dashboard = ({
     }
   ];
 
+  console.log('[Dashboard] received classes prop:', classes);
+
   return (
     <section style={styles.contentLayout}>
       <div style={styles.leftColumn}>
         <h2 style={styles.title}>Let's learn</h2>
 
         <div style={styles.tabContainer}>
-          <button 
+          <button
             style={activeTab === 'classes' ? styles.activeTab : styles.inactiveTab}
             onClick={() => setActiveTab('classes')}
           >
             Classes
           </button>
-          <button 
+          <button
             style={activeTab === 'explore' ? styles.activeTab : styles.inactiveTab}
             onClick={() => setActiveTab('explore')}
           >
             Explore
           </button>
         </div>
-        
+
         <div style={styles.classScrollArea} className="hide-scrollbar">
           {activeTab === 'classes' ? (
             <>
               {loading ? (
-                <p style={{textAlign: 'center', color: '#8d7b5f'}}>Loading your classes...</p>
+                <p style={{ textAlign: 'center', color: '#8d7b5f' }}>Loading your classes...</p>
               ) : (
                 <>
+                  {console.log('[Dashboard] rendering classes length', Array.isArray(classes) ? classes.length : typeof classes)}
                   {classes.map((cls) => (
                     <div
                       key={cls.id}
@@ -231,7 +234,7 @@ const Dashboard = ({
                     </div>
                   ))}
                   <button onClick={onJoinClass} style={styles.joinBtn}>
-                    + Join Class  
+                    + Join Class
                   </button>
                 </>
               )}
@@ -246,9 +249,9 @@ const Dashboard = ({
                   <button
                     style={styles.exploreBtn}
                     onClick={() => {
-                    if (item.id === "exp-1") {
+                      if (item.id === "exp-1") {
                         navigate("/quiz/self-paced");
-                    }
+                      }
                     }}
                   >
                     Start

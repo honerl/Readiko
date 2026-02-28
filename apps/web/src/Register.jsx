@@ -33,8 +33,8 @@ const Register = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
+    <div className="container">
+      <div className='card'>
         <h1 style={styles.logo}>ReadiKo</h1>
         <h2 style={styles.title}>Sign Up</h2>
 
@@ -88,11 +88,9 @@ const Register = () => {
 };
 
 const styles = {
-  container: { display: 'flex', justifyContent: 'center', height: '100vh', backgroundColor: '#FEF0D5' },
-  card: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '450px', backgroundColor: 'transparent', borderRadius: '12px', textAlign: 'center' },
   logo: { color: '#153204', margin: '70px 0 30px 0', fontSize: '40px'},
   input: { marginBottom: '15px'},
-  title: { fontSize: '25px', color: '#6C530E', marginBottom: '30px', alignSelf: 'flex-start', paddingLeft: '62px', fontWeight: '500' },
+  title: { fontSize: '25px', color: '#6C530E', marginBottom: '30px', alignSelf: 'flex-start', paddingLeft: '130px', fontWeight: '500' },
   form: { display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '15px', width: '100%' },
   text: { margin: '30px 0 30px 0', fontSize: '0.9rem', color: '#555', fontWeight: '500' },
 };

@@ -1,0 +1,235 @@
+.th-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  background: #f3e9c9;
+}
+
+/* Sidebar */
+.th-sidebar {
+  width: 220px;
+  background: #f6dca8;
+  border-right: 2px solid #d6a85b;
+  padding: 18px 14px;
+}
+
+.th-brand {
+  font-weight: 900;
+  font-size: 20px;
+  color: #1f4d1f;
+  margin-bottom: 26px;
+}
+
+.th-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.th-select {
+  width: 120px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #c9b27a;
+  background: #f9e7bf;
+}
+
+.th-link {
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #2a2a2a;
+}
+
+.th-link:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Content */
+.th-content {
+  flex: 1;
+  padding: 28px 28px 40px;
+  background: #f7f2e4;
+  position: relative;
+}
+
+.th-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 18px;
+}
+
+.th-panel {
+  width: min(860px, 100%);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid #cdbb8e;
+  border-radius: 12px;
+  padding: 22px;
+  min-height: 520px;
+}
+
+/* Grid */
+.th-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+.th-classCard {
+  background: #f6e7c7;
+  border: 1px solid #bfa970;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+.th-className {
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  margin-bottom: 8px;
+}
+
+.th-classDesc {
+  font-size: 11px;
+  color: #333;
+  margin-bottom: 14px;
+  min-height: 28px;
+}
+
+.th-classTeacher {
+  font-size: 11px;
+  text-align: right;
+  color: #222;
+}
+
+/* + Create card */
+.th-createCard {
+  height: 106px;
+  border-radius: 12px;
+  border: 2px dashed #bfa970;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 700;
+  color: #333;
+}
+
+.th-createCard:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Overlay + drawer */
+.th-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 50;
+}
+
+.th-drawer {
+  width: min(520px, 94vw);
+  height: 100%;
+  background: #fbf8ef;
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+  padding: 18px 18px 26px;
+  overflow: auto;
+}
+
+.th-drawerHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.th-back {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
+.th-drawerTitle {
+  font-weight: 900;
+  color: #222;
+}
+
+/* Form */
+.th-form {
+  display: grid;
+  gap: 18px;
+}
+
+.th-label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  color: #333;
+  font-weight: 700;
+}
+
+.th-inputLine {
+  height: 40px;
+  border: none;
+  border-bottom: 2px solid #cfcfcf;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  padding: 0 4px;
+}
+
+.th-textarea {
+  min-height: 90px;
+  border-radius: 12px;
+  border: 1px solid #7e7e7e;
+  padding: 12px;
+  outline: none;
+  resize: none;
+  background: #fff;
+}
+
+.th-selectWide {
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid #7e7e7e;
+  background: #fff;
+  padding: 0 12px;
+}
+
+.th-inputBox {
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid #7e7e7e;
+  background: #fff;
+  padding: 0 12px;
+  outline: none;
+}
+
+.th-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.th-createBtn {
+  background: #ef6b63;
+  border: none;
+  color: #fff;
+  font-weight: 800;
+  border-radius: 12px;
+  padding: 12px 40px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+}
+
+.th-createBtn:hover {
+  filter: brightness(0.97);
+}

@@ -1,0 +1,510 @@
+/* ============================================================
+   SHARED PAGE SHELL
+   ============================================================ */
+
+/* Wraps every question-taking screen */
+.test-page {
+  min-height: 100vh;
+  background-color: #f5ead6;
+  display: flex;
+  flex-direction: column;
+  font-family: "Georgia", serif;
+}
+
+/* ============================================================
+   EXPLORE / LESSON MODE  (images 1 & 2)
+   ============================================================ */
+
+/* ── Top bar ── */
+.explore-topbar {
+  display: flex;
+  align-items: center;
+  padding: 18px 32px;
+  gap: 16px;
+}
+
+.back-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #2a1f0e;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #2a1f0e;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.back-btn:hover { background: rgba(0,0,0,0.06); }
+
+/* Progress bar (lesson mode) */
+.progress-container {
+  flex: 1;
+  height: 12px;
+  background: #e8d9be;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #f06d5f;
+  border-radius: 8px;
+  transition: width 0.35s ease;
+}
+
+/* Streak pill (explore mode) */
+.streak-header {
+  flex: 1;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  color: #2a1f0e;
+  font-family: "Georgia", serif;
+}
+
+/* ── Main card ── */
+.explore-card {
+  margin: 0 32px;
+  background: #fff;
+  border-radius: 20px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Passage half ── */
+.passage-panel {
+  flex: 1;
+  padding: 32px 28px;
+  border-right: 1px solid #f0e6d3;
+  overflow-y: auto;
+  position: relative;
+}
+
+.difficulty-badge {
+  display: inline-block;
+  background-color: #6bbf7a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 18px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.difficulty-badge.medium { background-color: #f0a050; }
+.difficulty-badge.hard   { background-color: #e05c50; }
+
+.passage-panel h2 {
+  font-family: "Georgia", serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1209;
+  margin-bottom: 16px;
+}
+
+.passage-panel p {
+  font-family: "Georgia", serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #3a2e1e;
+}
+
+/* ── Chat / question half ── */
+.chat-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px 16px;
+  overflow-y: auto;
+  gap: 10px;
+}
+
+/* AI message row */
+.chat-row-ai {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.taptap-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Fallback avatar circle when no image is available */
+.taptap-avatar-fallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f5ead6;
+  border: 2px solid #e2bc45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.chat-bubble-ai {
+  background: #fff;
+  border: 1.5px solid #e8d9be;
+  border-radius: 0 14px 14px 14px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #2a1f0e;
+  max-width: 85%;
+  line-height: 1.5;
+}
+
+.chat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a6e3e;
+  margin-bottom: 4px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Student answer bubble */
+.chat-bubble-user {
+  background: #fdf3e8;
+  border: 1.5px solid #e8d9be;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #2a1f0e;
+  max-width: 85%;
+  align-self: flex-end;
+  line-height: 1.5;
+}
+
+/* Input row at bottom of chat */
+.chat-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #f0e6d3;
+}
+
+.chat-input {
+  flex: 1;
+  border: 1.5px solid #d8c9b0;
+  border-radius: 20px;
+  padding: 9px 16px;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  color: #2a1f0e;
+  font-family: "Georgia", serif;
+  transition: border-color 0.15s;
+}
+
+.chat-input:focus { border-color: #f06d5f; }
+
+.chat-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f06d5f;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 15px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.chat-send-btn:hover { background: #e05c4e; }
+
+/* ── Bottom action bar ── */
+.explore-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+  margin-top: 4px;
+}
+
+.action-btn-skip {
+  padding: 12px 40px;
+  border-radius: 50px;
+  border: 2px solid #2a1f0e;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2a1f0e;
+  cursor: pointer;
+  font-family: "Georgia", serif;
+  transition: background 0.15s;
+}
+
+.action-btn-skip:hover { background: rgba(0,0,0,0.05); }
+
+.action-btn-next {
+  padding: 12px 44px;
+  border-radius: 50px;
+  border: none;
+  background: #f06d5f;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Georgia", serif;
+  transition: background 0.15s, transform 0.1s;
+  box-shadow: 0 3px 10px rgba(240,109,95,0.35);
+}
+
+.action-btn-next:hover  { background: #e05c4e; }
+.action-btn-next:active { transform: scale(0.97); }
+
+/* ============================================================
+   EXAM MODE  (image 3)
+   ============================================================ */
+
+/* ── Outer row: left column + right sidebar ── */
+.exam-layout {
+  display: flex;
+  flex: 1;
+  padding: 20px 28px 0;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* ── Left column: topbar + card stacked ── */
+.exam-main-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* ── Top bar inside the left column ── */
+.exam-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ── Item header pill (fills remaining width next to back btn) ── */
+.exam-item-header {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.exam-item-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1209;
+  font-family: "Georgia", serif;
+}
+
+.exam-item-points {
+  font-size: 13px;
+  color: #7a6040;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ── Main content card (passage + questions) ── */
+.exam-content-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 16px;
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  min-height: 420px;
+}
+
+/* Passage column inside exam card */
+.exam-passage-col {
+  flex: 1;
+  padding: 28px 24px;
+  border-right: 1px solid #f0e6d3;
+  overflow-y: auto;
+}
+
+.exam-passage-col h2 {
+  font-family: "Georgia", serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #1a1209;
+  margin-bottom: 16px;
+}
+
+.exam-passage-col p {
+  font-family: "Georgia", serif;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: #3a2e1e;
+  margin-bottom: 12px;
+}
+
+/* Questions column inside exam card */
+.exam-questions-col {
+  flex: 1;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.exam-question-block h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2a1f0e;
+  margin-bottom: 10px;
+  font-family: "Georgia", serif;
+  line-height: 1.5;
+}
+
+.exam-answer-input {
+  width: 100%;
+  height: 100px;
+  border-radius: 10px;
+  border: 1.5px solid #ddd;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: "Georgia", serif;
+  resize: none;
+  outline: none;
+  color: #2a1f0e;
+  background: #fff;
+  transition: border-color 0.15s;
+}
+
+.exam-answer-input::placeholder { color: #aaa; }
+.exam-answer-input:focus { border-color: #f06d5f; }
+
+/* ── Right sidebar (navigation + timer) ── */
+.exam-sidebar {
+  width: 120px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.exam-sidebar-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.exam-sidebar-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2a1f0e;
+  margin-bottom: 12px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Number grid for item navigation */
+.nav-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.nav-num-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  background: #f5ead6;
+  color: #2a1f0e;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.nav-num-btn:hover  { background: #f5c5c0; }
+.nav-num-btn.active { background: #f06d5f; color: #fff; }
+.nav-num-btn.answered {
+  background: #f5c5c0;
+  color: #c04040;
+}
+
+/* Timer block */
+.exam-timer-label {
+  font-size: 12px;
+  color: #7a6040;
+  font-family: "Segoe UI", sans-serif;
+  margin-bottom: 4px;
+}
+
+.exam-timer-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2a1f0e;
+  font-family: "Segoe UI", monospace;
+  text-align: center;
+}
+
+/* ── Bottom pagination ── */
+.exam-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 28px;
+  margin-top: auto;
+}
+
+.exam-page-btn {
+  padding: 11px 44px;
+  border-radius: 50px;
+  border: none;
+  background: #f06d5f;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: "Georgia", serif;
+  transition: background 0.15s, transform 0.1s;
+  box-shadow: 0 3px 10px rgba(240,109,95,0.3);
+}
+
+.exam-page-btn:hover  { background: #e05c4e; }
+.exam-page-btn:active { transform: scale(0.97); }
+.exam-page-btn:disabled {
+  background: #d8c9b0;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.exam-page-indicator {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2a1f0e;
+  font-family: "Segoe UI", sans-serif;
+  min-width: 50px;
+  text-align: center;
+}

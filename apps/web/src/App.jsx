@@ -4,6 +4,11 @@ import Login from './Login';
 import Register from './Register';
 import RoleSelection from './RoleSelection';
 import StudentHomepage from './StudentHomepage';
+import ExamMode from './ExamMode';
+import LessonMode from './LessonMode';
+import ExploreScreen from './ExploreScreen';
+import './App.css';
+import './Test.css'
 import TeacherHome from './TeacherHome';
 import { supabase } from './services/supabaseClient';
 
@@ -98,6 +103,9 @@ function App() {
                 : <Navigate to="/login" />
               } 
           />
+          <Route path="/exple" element={<ExamMode />} />
+          <Route path="/explore" element={<LessonMode />} />
+          <Route path="/exp" element={<ExploreScreen />} />
 
           {/* Teacher Home Route (Protected) */}
           <Route 

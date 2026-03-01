@@ -103,26 +103,72 @@ async def join_class(
         class_code = body.get("class_code")
         student_id = body.get("student_id")
 
-        classrooms = cast(
+        print(f"[join_class] student_id={student_id} class_code={class_code}")
+
+        classroom_result = cast(
             Any,
-            supabase.table("classroom")
-            .select("c_id")
-            .eq("code", class_code)
-            .maybe_single()
+            supabase.table("classrooms")
+            .select("*")
+            .eq("class_code", class_code)
             .execute(),
         )
 
-        if not classrooms.data:
+        print(f"[join_class] classroom lookup result: {classroom_result.data}")
+
+        if not classroom_result.data:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Class not found"
             )
 
-        c_id = classrooms.data["c_id"]
+        classroom = classroom_result.data[0]
+        c_id = classroom["c_id"]
 
+        # check if student is already in the class
+        existing = cast(
+            Any,
+            supabase.table("student_classrooms")
+            .select("classroom_id")
+            .eq("student_id", student_id)
+            .eq("classroom_id", c_id)
+            .execute(),
+        )
+
+        if existing.data:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Already enrolled in class"
+            )
+        
+
+        # insert in student_classrooms
         supabase.table("student_classrooms").insert(
-            {"uid": student_id, "c_id": c_id}
+            {"student_id": student_id, "classroom_id": c_id}
         ).execute()
 
-        return {"success": True, "classroom_id": c_id}
+        # fetch teacher name
+        teacher_name = "Unknown Teacher"
+        teacher_id = classroom.get("teacher_id")   
+        if teacher_id:
+            teacher_result = cast(
+                Any,
+                supabase.table("users")
+                .select("fname, lname")
+                .eq("uid", teacher_id)
+                .maybe_single()
+                .execute(),
+            )
+            if teacher_result.data:
+                teacher_name = f'{teacher_result.data["fname"]} {teacher_result.data["lname"]}'
+
+        return {
+            "id": c_id,
+            "title": classroom.get("name"),
+            "description": classroom.get("description"),
+            "teacher_name": teacher_name,
+        }
+    
+    except HTTPException:
+        raise  # re-raise known HTTP exceptions without modification
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

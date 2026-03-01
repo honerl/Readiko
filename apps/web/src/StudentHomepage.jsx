@@ -1,8 +1,9 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import ClassDetail from './ClassDetail';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
 import { apiFetch } from './services/api';
+import { supabase } from './services/supabaseClient';
 
 // simple module‑level memo to avoid duplicate network requests when
 // React StrictMode mounts/unmounts the component. the ref inside the
@@ -18,7 +19,7 @@ const StudentHomepage = ({ user }) => {
   const [activeSidebarItem, setActiveSidebarItem] = useState('learn');
   const [currentClass, setCurrentClass] = useState(null);
 
-  // whenever the user toggles away we want to forget the previous
+// whenever the user toggles away we want to forget the previous
   // fetch so a future login with the same id will trigger a request.
   useEffect(() => {
     if (!user) {
@@ -74,16 +75,20 @@ const StudentHomepage = ({ user }) => {
     const classCode = prompt("Enter Class Code:");
     if (!classCode) return;
     try {
-      const response = await fetch('http://localhost:8000/join-class', {
+      const response = await apiFetch('/classes/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ student_id: user.id, class_code: classCode })
       });
+
       if (response.ok) {
         const newJoinedClass = await response.json();
-        setClasses([...classes, newJoinedClass]);
+        setClasses(prev => [...prev, newJoinedClass]);
+      } else {
+        alert("Failed to join class. Check the class code and try again.");
       }
     } catch (err) {
+      console.error('[JoinClass] Error:', err);
       alert("Error joining class");
     }
   };
@@ -91,7 +96,7 @@ const StudentHomepage = ({ user }) => {
   // logout function passed to sidebar
   const handleLogout = async () => {
     try {
-      await import('./services/supabaseClient').then(m => m.supabase.auth.signOut());
+      await supabase.auth.signOut();
       // App.jsx listens for auth state changes and will clean up the user state
     } catch (err) {
       console.error('Logout failed', err);

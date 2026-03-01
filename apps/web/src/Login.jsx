@@ -54,9 +54,9 @@ const Login = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.logo}>ReadiKo</h1>
+    <div className='container'>
+      <div className='card'>
+        <img src={'/assets/logo1.png'} alt="ReadiKo Logo" style={styles.logoImage} />
         <h2 style={styles.title}>Sign In</h2>
         
         <form onSubmit={handleSubmit} style={styles.form}>
@@ -99,25 +99,10 @@ const Login = ({ onLoginSuccess }) => {
 };
 
 const styles = {
-  container: { 
-    display: 'flex', 
-    justifyContent: 'center', 
-    height: '100vh', 
-    backgroundColor: '#FEF0D5' 
-  },
-  card: { 
-    display: 'flex', 
-    flexDirection: 'column', 
-    alignItems: 'center', 
-    width: '450px', 
-    backgroundColor: 'transparent', 
-    borderRadius: '12px', 
-    textAlign: 'center' 
-  },
-  logo: { 
-    color: '#153204', 
-    margin: '70px 0 30px 0', 
-    fontSize: '40px'
+  logoImage: {
+    width: '300px',     
+    height: 'auto',
+    margin: '70px 0 10px 0',
   },
   input: { 
     marginBottom: '15px'
@@ -127,7 +112,7 @@ const styles = {
     color: '#6C530E', 
     marginBottom: '30px', 
     alignSelf: 'flex-start', 
-    paddingLeft: '62px', 
+    paddingLeft: '130px', 
     fontWeight: '500' 
   },
   form: { 

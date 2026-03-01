@@ -56,6 +56,7 @@ const StudentHomepage = ({ user }) => {
 
         const data = await response.json();
         console.log('[StudentHomepage] Classes loaded:', data);
+        console.log('[StudentHomepage] setting classes ->', data);
         setClasses(data);
       } catch (err) {
         console.error('[StudentHomepage] Failed to load classes', err);
@@ -135,21 +136,21 @@ const StudentHomepage = ({ user }) => {
 };
 
 const styles = {
-  container: { 
-    display: 'flex', 
-    height: '100vh', 
-    backgroundColor: '#fdf7e7', 
+  container: {
+    display: 'flex',
+    height: '100vh',
+    backgroundColor: '#fdf7e7',
     fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
     overflow: 'hidden',
     width: '100%'
   },
-  
-  main: { 
-    flex: 1, 
-    padding: '40px 180px', 
+
+  main: {
+    flex: 1,
+    padding: '40px 180px',
     width: '100%',
     height: '100%',
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     boxSizing: 'border-box',

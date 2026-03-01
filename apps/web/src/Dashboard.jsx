@@ -192,6 +192,8 @@ const Dashboard = ({
     }
   ];
 
+  console.log('[Dashboard] received classes prop:', classes);
+
   return (
     <section style={styles.contentLayout}>
       <div style={styles.leftColumn}>
@@ -216,9 +218,10 @@ const Dashboard = ({
           {activeTab === 'classes' ? (
             <>
               {loading ? (
-                <p style={{textAlign: 'center', color: '#8d7b5f'}}>Loading your classes...</p>
+                <p style={{ textAlign: 'center', color: '#8d7b5f' }}>Loading your classes...</p>
               ) : (
                 <>
+                  {console.log('[Dashboard] rendering classes length', Array.isArray(classes) ? classes.length : typeof classes)}
                   {classes.map((cls) => (
                     <div
                       key={cls.id}
@@ -247,7 +250,7 @@ const Dashboard = ({
                     style={styles.exploreBtn}
                     onClick={() => {
                     if (item.id === "exp-1") {
-                        navigate("/quiz/self-paced");
+                        navigate("/explore");
                     }
                     }}
                   >

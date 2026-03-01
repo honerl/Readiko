@@ -4,8 +4,16 @@ import Login from './Login';
 import Register from './Register';
 import RoleSelection from './RoleSelection';
 import StudentHomepage from './StudentHomepage';
+import ExamMode from './ExamMode';
+import LessonMode from './LessonMode';
+import ExploreScreen from './ExploreScreen';
+import QuestionScreen from "./components/question_screen.jsx";
+import './App.css';
+import './Test.css'
 import TeacherHome from './TeacherHome';
 import { supabase } from './services/supabaseClient';
+import { checkHealth } from "./services/api.js";
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -98,6 +106,9 @@ function App() {
                 : <Navigate to="/login" />
               } 
           />
+          <Route path="/exple" element={<ExamMode />} />
+          <Route path="/explore" element={<LessonMode />} />
+          <Route path="/exp" element={<ExploreScreen />} />
 
           {/* Teacher Home Route (Protected) */}
           <Route 
@@ -105,6 +116,15 @@ function App() {
             element={
               user && userRole === 'teacher' 
                 ? <TeacherHome user={user} /> 
+                : <Navigate to="/login" />
+            } 
+          />
+
+          <Route 
+            path="/exam/:classId/:itemId" 
+            element={
+              user 
+                ? <ExamMode user={user} /> 
                 : <Navigate to="/login" />
             } 
           />

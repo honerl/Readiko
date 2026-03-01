@@ -18,6 +18,7 @@ class JWTClaims(TypedDict, total=False):
     Supabase tokens always include `sub` (user id) when valid.
     Other fields may or may not be present depending on config.
     """
+
     sub: Required[str]
     email: NotRequired[str]
     aud: NotRequired[str | list[str]]

@@ -1,36 +1,57 @@
-from fastapi import APIRouter, WebSocket
-from .schemas import ChatRequest, ChatResponse
-from .controller import ChatController
+from fastapi import APIRouter, HTTPException
 from app.core.chat_service import ChatService
-
-import json
+from app.models.chat import (
+    ChatNotImplementedResponse,
+    ExploreSessionAnswerRequest,
+    ExploreSessionAnswerResponse,
+    ExploreSessionStartRequest,
+    ExploreSessionStartResponse,
+    TeacherSessionStartRequest,
+)
 
 router = APIRouter()
 chat_service = ChatService()
 
-#Rest Endpoint
-@router.post("/", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest):
-    reply = chat_service.generate_response(request.user_id, request.messages)
-    return ChatResponse(response=reply)
 
-#Websocket endpoint
-@router.websocket("/")
-async def websocket_chat(websocket: WebSocket):
-    await websocket.accept()
+@router.post(
+    "/chat/explore/start",
+    response_model=ExploreSessionStartResponse,
+)
+async def start_explore_session(
+    request: ExploreSessionStartRequest,
+) -> ExploreSessionStartResponse:
+    return chat_service.start_explore_session(
+        user_id=request.user_id,
+        topic=request.topic,
+    )
+
+
+@router.post(
+    "/chat/explore/{session_id}/answer",
+    response_model=ExploreSessionAnswerResponse,
+)
+async def answer_explore_session(
+    session_id: str,
+    request: ExploreSessionAnswerRequest,
+) -> ExploreSessionAnswerResponse:
     try:
-        while True:
-            data = await websocket.receive_text()
-            payload = json.loads(data)
+        return chat_service.submit_explore_answer(
+            session_id=session_id,
+            user_id=request.user_id,
+            answer=request.answer,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
-            user_id = payload["user_id"]
-            messages = payload["messages"]  
 
-            stream = chat_service.stream_reply(user_id, messages)
-
-            for chunk in stream:
-                await websocket.send_text(chunk)
-            
-            await websocket.send_text("[DONE]")
-    except Exception as e:
-        await websocket.close(code=1000, reason=str(e))
+@router.post(
+    "/chat/teacher/start",
+    response_model=ChatNotImplementedResponse,
+)
+async def start_teacher_session(
+    request: TeacherSessionStartRequest,
+) -> ChatNotImplementedResponse:
+    _ = request
+    return ChatNotImplementedResponse(
+        detail="Teacher chat flow is scaffolded but not implemented yet."
+    )

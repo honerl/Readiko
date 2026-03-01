@@ -105,7 +105,7 @@ async def join_class(
 
         classrooms = cast(
             Any,
-            supabase.table("classroom")
+            supabase.table("classrooms")
             .select("c_id")
             .eq("code", class_code)
             .maybe_single()
@@ -119,8 +119,9 @@ async def join_class(
 
         c_id = classrooms.data["c_id"]
 
+        # insert using the correct foreign key column name
         supabase.table("student_classrooms").insert(
-            {"uid": student_id, "c_id": c_id}
+            {"uid": student_id, "classroom_id": c_id}
         ).execute()
 
         return {"success": True, "classroom_id": c_id}

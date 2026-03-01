@@ -7,15 +7,18 @@ class ActivityBase(BaseModel):
     topic: str
     open_date: datetime
     close_date: datetime
-    type_of_activity: str
-
-class Activity(ActivityBase):
-    id: int
+    type_of_activity: str  # 'exam' or 'lesson'
 
 class ActivityCreate(ActivityBase):
     pass
 
-class ActivityUpdate(ActivityBase):
+class Activity(ActivityBase):
+    a_id: int
+
+    model_config = {
+        "from_attributes": True
+    }
+class ActivityUpdate(BaseModel):
     topic: Optional[str] = None
     open_date: Optional[datetime] = None
     close_date: Optional[datetime] = None

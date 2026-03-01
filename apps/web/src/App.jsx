@@ -9,49 +9,66 @@ import LessonMode from './LessonMode';
 import ExploreScreen from './ExploreScreen';
 import './App.css';
 import './Test.css'
+import TeacherHome from './TeacherHome';
 import { supabase } from './services/supabaseClient';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // synchronize with supabase session when the app loads
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-    };
-    getInitialSession();
+    const initializeAuth = async () => {
+      setLoading(true);
 
-    // Listen for auth state changes
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('auth event:', event);
-      
-      // Update user state based on event
-      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
-        setUser(null);
-      } else if (session?.user) {
-        // avoid bumping the state if the id hasn't actually changed;
-        // Supabase sometimes emits INITIAL_SESSION after SIGNED_IN,
-        // which leads to two identical user objects and a double
-        // render downstream.
-        if (session.user.id !== user?.id) {
-          setUser(session.user);
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session?.user) {
+        setUser(session.user);
+
+        const { data, error } = await supabase
+          .from('users')
+          .select('role')
+          .eq('uid', session.user.id)
+          .single();
+
+        if (!error && data) {
+          setUserRole(data.role);
+        } else {
+          console.error('Role fetch error:', error);
+          setUserRole(null);
         }
       } else {
         setUser(null);
+        setUserRole(null);
       }
-    });
 
-    return () => {
-      listener?.subscription.unsubscribe();
+      setLoading(false);
     };
+
+    initializeAuth();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!session) {
+          setUser(null);
+          setUserRole(null);
+        }
+      }
+    );
   }, []);
 
   // handler that child components can call when they obtain the user
-  const handleAuthSuccess = (userData) => {
+  const handleAuthSuccess = (userData, role) => {
     setUser(userData);
+    setUserRole(role); // assuming role is included in the user object
+    console.log('DEBUG: handleAuthSuccess called with role', role);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>
@@ -61,7 +78,13 @@ function App() {
           <Route 
             path="/login" 
             element={
-              user ? <Navigate to="/home" /> : <Login onLoginSuccess={handleAuthSuccess} />
+              user && userRole ? (
+                userRole === 'teacher'
+                  ? <Navigate to="/teacher/home" />
+                  : <Navigate to="/home" />
+              ) : (
+                <Login onLoginSuccess={handleAuthSuccess} />
+              )
             } 
           />
 
@@ -75,12 +98,24 @@ function App() {
           <Route 
             path="/home" 
               element={
-              user ? <StudentHomepage user={user} /> : <Navigate to="/login" />
+              user && userRole === 'student' 
+                ? <StudentHomepage user={user} /> 
+                : <Navigate to="/login" />
               } 
           />
           <Route path="/exple" element={<ExamMode />} />
           <Route path="/explore" element={<LessonMode />} />
           <Route path="/exp" element={<ExploreScreen />} />
+
+          {/* Teacher Home Route (Protected) */}
+          <Route 
+            path="/teacher/home" 
+            element={
+              user && userRole === 'teacher' 
+                ? <TeacherHome user={user} /> 
+                : <Navigate to="/login" />
+            } 
+          />
 
           {/* 4. Default: Redirect to login if path doesn't exist */}
           <Route path="*" element={<Navigate to="/login" />} />

@@ -27,11 +27,26 @@ const Login = ({ onLoginSuccess }) => {
 
       if (error) throw error;
 
-      // when login succeeds the session will be stored in
-      // localStorage and supabase.auth.getSession() will return it.  We
-      // can also pass the user back to the parent to show UI.
-      onLoginSuccess(data.user);
-      navigate('/home');
+      const user = data.user;
+      if (!user) throw new Error('No user returned from login.');
+
+      // Fetch the user's role from the users table using uid
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('role')
+        .eq('uid', user.id)
+        .single();
+
+      if (userError) throw userError;
+      const role = userData?.role;
+      console.log('DEBUG: Logged in user role is:', role);
+
+      onLoginSuccess(user, role);
+      if(role === 'teacher') {
+        navigate('/teacher/home');
+      } else if (role === 'student') {
+        navigate('/home');
+      }
     } catch (err) {
       console.error('Supabase sign‑in error:', err);
       alert(err.message || 'Login failed. Please check your credentials.');

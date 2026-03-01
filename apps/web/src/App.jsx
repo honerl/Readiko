@@ -7,10 +7,13 @@ import StudentHomepage from './StudentHomepage';
 import ExamMode from './ExamMode';
 import LessonMode from './LessonMode';
 import ExploreScreen from './ExploreScreen';
+import QuestionScreen from "./components/question_screen.jsx";
 import './App.css';
 import './Test.css'
 import TeacherHome from './TeacherHome';
 import { supabase } from './services/supabaseClient';
+import { checkHealth } from "./services/api.js";
+
 
 function App() {
   const [user, setUser] = useState(null);

@@ -1,33 +1,38 @@
 import React from 'react';
 
 const Sidebar = ({ activeItem, onSelect, classes, onChooseClass, onLogout }) => {
+  // Helper to handle navigation and reset class view
+  const handleNavClick = (item) => {
+    onSelect(item);
+    // Passing null to onChooseClass clears the currentClass state in Homepage
+    onChooseClass(null); 
+  };
+
   return (
     <aside className="student-sidebar">
-      <h1 className="sidebar-logo">ReadiKo</h1>
+      <img src={'/assets/logo2.png'} alt="ReadiKo Logo" className="sidebar-logo" />
       <nav className="sidebar-nav">
         <button
           className={`sidebar-link ${activeItem === 'learn' ? 'active' : ''}`}
-          onClick={() => onSelect('learn')}
+          onClick={() => handleNavClick('learn')}
         >
           Learn
         </button>
-        <button className="sidebar-link">Achievements</button>
+        
+        <button 
+          className={`sidebar-link ${activeItem === 'achievements' ? 'active' : ''}`}
+          onClick={() => handleNavClick('achievements')}
+        >
+          Achievements
+        </button>
+
         <select
           className={`sidebar-select ${activeItem === 'enrolled' ? 'active' : ''}`}
-          onClick={() => {
-            // Only activate 'enrolled' if the student actually has classes
-            if (classes && classes.length > 0) {
-              onSelect('enrolled');
-            } else {
-              // keep it on 'learn' when there are no enrolled classes
-              onSelect('learn');
-            }
-          }}
+          value={activeItem === 'enrolled' ? "" : ""} // Keep "Enrolled" visible as label
           onChange={e => {
             const val = e.target.value;
-            // if user picks the blank placeholder, revert to 'learn'
             if (!val) {
-              onSelect('learn');
+              handleNavClick('learn');
               return;
             }
             const selected = classes.find(c => String(c.id) === val);
@@ -42,11 +47,26 @@ const Sidebar = ({ activeItem, onSelect, classes, onChooseClass, onLogout }) => 
             <option key={cls.id} value={cls.id}>{cls.title}</option>
           ))}
         </select>
-        <button className="sidebar-link">Shop</button>
-        <button className="sidebar-link">Profile</button>
+
+        <button 
+          className={`sidebar-link ${activeItem === 'shop' ? 'active' : ''}`}
+          onClick={() => handleNavClick('shop')}
+        >
+          Shop
+        </button>
+        
+        <button 
+          className={`sidebar-link ${activeItem === 'profile' ? 'active' : ''}`}
+          onClick={() => handleNavClick('profile')}
+        >
+          Profile
+        </button>
       </nav>
+
       <div className="sidebar-footer">
-        <button className="sidebar-link logout-link" onClick={onLogout}>Log Out</button>
+        <button className="sidebar-link logout-link" onClick={onLogout}>
+          Log Out
+        </button>
       </div>
     </aside>
   );

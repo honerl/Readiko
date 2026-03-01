@@ -41,7 +41,7 @@ const Login = ({ onLoginSuccess }) => {
   return (
     <div className='container'>
       <div className='card'>
-        <h1 style={styles.logo}>ReadiKo</h1>
+        <img src={'/assets/logo1.png'} alt="ReadiKo Logo" style={styles.logoImage} />
         <h2 style={styles.title}>Sign In</h2>
         
         <form onSubmit={handleSubmit} style={styles.form}>
@@ -84,10 +84,10 @@ const Login = ({ onLoginSuccess }) => {
 };
 
 const styles = {
-  logo: { 
-    color: '#153204', 
-    margin: '70px 0 30px 0', 
-    fontSize: '40px'
+  logoImage: {
+    width: '300px',     
+    height: 'auto',
+    margin: '70px 0 10px 0',
   },
   input: { 
     marginBottom: '15px'

@@ -42,13 +42,29 @@
 .input {
   padding-left: 20px;
   border-radius: 50px;
-  height: 33px;
+  height: 36px;
   border: 1px solid #AAAAAA;
   background-color: #ffffff;
-  width: 300px;
+  width: 335px;
   color: #2A0000;
   outline: none;
-  font-size: 11px;
+  font-size: 13px;
+}
+
+/* keep typed/auto‑filled text dark rather than letting the browser
+   turn it grey or yellow */
+.input:not(:placeholder-shown) {
+  color: #2A0000;
+}
+
+/* override autofill coloring in webkit */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-text-fill-color: #2A0000 !important;
+  background-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .input::placeholder {
@@ -68,7 +84,7 @@
   color: white;
   font-weight: bold;
   font-size: 15px;
-  width: 325px;
+  width: 360px;
   height: 52px;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -92,7 +108,7 @@
   color: #6C530E;
   font-weight: bold;
   cursor: pointer;
-  width: 325px;
+  width: 360px;
   height: 52px;
   display: flex;
   justify-content: center; 
@@ -107,7 +123,7 @@
 
 /* Sidebar Styles */
 .student-sidebar {
-  width: 140px;
+  width: 200px;
   background-color: #FFE7BA;
   padding: 40px 20px;
   border-right: 3px solid #E2BC45;
@@ -120,7 +136,7 @@
   color: #153204;
   font-size: 28px;
   font-weight: bold;
-  margin-bottom: 80px;
+  margin-bottom: 18px;
   text-align: center;
 }
 
@@ -134,7 +150,7 @@
   background: none;
   border: none;
   text-align: left;
-  font-size: 12px;
+  font-size: 14px;
   color: #153204;
   cursor: pointer;
   padding: 7px 28px;
@@ -152,7 +168,7 @@
   font-weight: bold;
   text-align: left;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .sidebar-select {
@@ -163,7 +179,7 @@
   font-weight: bold;
   cursor: pointer;
   color: #153204;
-  font-size: 12px;
+  font-size: 14px;
   transition: 0.2s;
 }
 
@@ -182,8 +198,9 @@
 
 /* footer area for logout button */
 .sidebar-footer {
+  display: flex;
+  flex-direction: column;
   margin-top: auto;
-  padding: 20px 0;
 }
 
 /* extra styling for logout link */

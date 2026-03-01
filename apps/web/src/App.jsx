@@ -4,6 +4,11 @@ import Login from './Login';
 import Register from './Register';
 import RoleSelection from './RoleSelection';
 import StudentHomepage from './StudentHomepage';
+import ExamMode from './ExamMode';
+import LessonMode from './LessonMode';
+import ExploreScreen from './ExploreScreen';
+import './App.css';
+import './Test.css'
 import { supabase } from './services/supabaseClient';
 
 function App() {
@@ -73,6 +78,9 @@ function App() {
               user ? <StudentHomepage user={user} /> : <Navigate to="/login" />
               } 
           />
+          <Route path="/exple" element={<ExamMode />} />
+          <Route path="/explore" element={<LessonMode />} />
+          <Route path="/exp" element={<ExploreScreen />} />
 
           {/* 4. Default: Redirect to login if path doesn't exist */}
           <Route path="*" element={<Navigate to="/login" />} />

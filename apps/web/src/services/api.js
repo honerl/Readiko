@@ -35,3 +35,31 @@ export const checkHealth = async () => {
   const response = await apiFetch(`/health`);
   return response.json();
 };
+
+export const startExploreSession = async ({ userId, topic }) => {
+  const response = await apiFetch(`/chat/explore/start`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id: userId, topic }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to start explore session");
+  }
+
+  return response.json();
+};
+
+export const answerExploreSession = async ({ sessionId, userId, answer }) => {
+  const response = await apiFetch(`/chat/explore/${sessionId}/answer`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id: userId, answer }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to submit explore answer");
+  }
+
+  return response.json();
+};

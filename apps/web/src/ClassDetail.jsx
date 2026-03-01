@@ -67,82 +67,128 @@ const ClassDetail = ({ cls, onBack }) => {
   const ongoingItems = allItems.filter(i => (i.progress ?? 0) < 100);
   const completedItems = allItems.filter(i => (i.progress ?? 0) >= 100);
 
-  const handleItemClick = item => {
-    if (cls?.id && item?.id && !item.id.toString().startsWith('temp')) {
-      navigate(`/exam/${cls.id}/${item.id}`);
+  // ── Button label + style based on progress ──────────────
+  const getButtonLabel = (progress) => {
+    if (progress >= 100) return 'Review';
+    if (progress > 0)    return 'Continue';
+    return 'Start';
+  };
+
+  // Review gets a softer outlined style; Start/Continue stay coral
+  const getButtonStyle = (progress) => ({
+    ...styles.actionBtn,
+    ...(progress >= 100 ? styles.actionBtnReview : {}),
+  });
+
+  // ── Navigation ──────────────────────────────────────────
+  const handleItemClick = (item) => {
+    if (!item.id) return;
+    const base = `/class/${cls.id}/item/${item.id}`;
+    if (item.progress >= 100) {
+      navigate(`${base}/review`);
     } else {
       console.log('Item clicked (no real DB ID):', item);
     }
   };
 
-  // --- Styles (keep your existing styles, abbreviated here for clarity) ---
-  const styles = {
-    container: { display: 'flex', flexDirection: 'column', paddingRight: '220px', width: '100%', height: '100%' },
-    headerCard: { backgroundColor: '#FFFDF5', padding: '20px 30px', borderRadius: 14, border: '1px solid #BAAAAA', cursor: 'pointer' },
-    header: { fontSize: 32, color: '#6C530E', margin: 0 },
-    desc: { fontSize: 16, color: '#7a6b4a', margin: '8px 0' },
-    teacher: { textAlign: 'right', color: '#6C530E', fontSize: 14 },
-    tabContainer: { display: 'flex', gap: 120, justifyContent: 'center', margin: '30px 0 20px' },
-    activeTab: { background: 'none', border: 'none', fontSize: 16, fontWeight: 'bold', color: '#EE6A60', cursor: 'pointer', borderBottom: '3px solid #EE6A60', paddingBottom: 8, outline: 'none' },
-    inactiveTab: { background: 'none', border: 'none', fontSize: 16, color: '#d4c4a8', cursor: 'pointer', paddingBottom: 8, outline: 'none' },
-    contentArea: { backgroundColor: '#FFFDF5', borderRadius: 14, padding: '35px 48px', display: 'flex', flexDirection: 'column', gap: 24, boxSizing: 'border-box', border: '1px solid #BAAAAA' },
-    itemCard: { backgroundColor: '#fcf0c8', padding: '20px 25px', borderRadius: 14, border: '1px solid #e0d090', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 36, height: 100 },
-    itemLeft: { flex: 1, display: 'flex', flexDirection: 'column', gap: 12 },
-    itemRight: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12 },
-    itemTitle: { fontSize: 20, color: '#4a3b20', margin: 0, display: 'flex', alignItems: 'center' },
-    typeBadge: { marginLeft: 12, backgroundColor: '#A4D65E', color: '#fff', borderRadius: 12, fontSize: 12, padding: '2px 8px' },
-    dueDate: { fontSize: 14, color: '#4a3b20', fontWeight: 500 },
-    progressContainer: { display: 'flex', alignItems: 'center', gap: 12, width: '100%' },
-    progressBarBg: { background: '#fff', flex: 1, height: 16, borderRadius: 6, overflow: 'hidden', display: 'flex', alignItems: 'center' },
-    progressBarFill: { background: '#EE6A60', height: '100%' },
-    progressText: { fontSize: 14, color: '#4a3b20', minWidth: 30, textAlign: 'center', fontWeight: 500 },
-    trophy: { fontSize: 18 },
-    actionBtn: { backgroundColor: '#EE6A60', color: '#fff', border: 'none', padding: '8px 32px', borderRadius: 10, cursor: 'pointer', outline: 'none', fontSize: 20, fontWeight: 500 },
+  const handleButtonClick = (e, item) => {
+    e.stopPropagation(); // don't also fire the card's onClick
+    handleItemClick(item);
   };
+
+  const displayedItems = activeTab === 'ongoing' ? ongoingItems : completedItems;
 
   return (
     <section style={styles.container}>
+      <style>{`
+        .tab-btn:hover {
+          color: #EE6A60 !important;
+          border-bottom: 3px solid rgba(238, 106, 96, 0.3) !important;
+        }
+      `}</style>
+
+      {/* Header card */}
       <div style={styles.headerCard} onClick={onBack}>
         <h2 style={styles.header}>{cls?.title || 'Class Name'}</h2>
         <p style={styles.desc}>{cls?.description || 'No description available.'}</p>
         <p style={styles.teacher}>{cls?.teacher_name || 'Ms. English Teacher'}</p>
       </div>
 
+      {/* Tabs */}
       <div style={styles.tabContainer}>
-        <button style={activeTab === 'ongoing' ? styles.activeTab : styles.inactiveTab} onClick={() => setActiveTab('ongoing')}>On going</button>
-        <button style={activeTab === 'completed' ? styles.activeTab : styles.inactiveTab} onClick={() => setActiveTab('completed')}>Completed</button>
+        <button
+          className="tab-btn"
+          style={activeTab === 'ongoing' ? styles.activeTab : styles.inactiveTab}
+          onClick={() => setActiveTab('ongoing')}
+        >
+          On going
+        </button>
+        <button
+          className="tab-btn"
+          style={activeTab === 'completed' ? styles.activeTab : styles.inactiveTab}
+          onClick={() => setActiveTab('completed')}
+        >
+          Completed
+        </button>
       </div>
 
+      {/* Content */}
       <div style={styles.contentArea}>
-        {loading ? (
-          <p style={{ textAlign: 'center', color: '#8d7b5f' }}>Loading activities...</p>
-        ) : (activeTab === 'ongoing' ? ongoingItems : completedItems).length > 0 ? (
-          (activeTab === 'ongoing' ? ongoingItems : completedItems).map(item => (
-            <div key={item.id} style={styles.itemCard}>
+        {displayedItems.length === 0 ? (
+          <p style={{ textAlign: 'center', color: '#8d7b5f' }}>
+            {activeTab === 'ongoing'
+              ? 'No activities in progress.'
+              : 'No completed activities yet.'}
+          </p>
+        ) : (
+          displayedItems.map(item => (
+            <div
+              key={item.id}
+              style={styles.itemCard}
+              onClick={() => handleItemClick(item)}
+            >
+              {/* LEFT: title + progress */}
               <div style={styles.itemLeft}>
                 <h4 style={styles.itemTitle}>
-                  {item.title} {item.type && <span style={styles.typeBadge}>{item.type}</span>}
+                  {item.title}
+                  {item.type && <span style={styles.typeBadge}>{item.type}</span>}
                 </h4>
                 <div style={styles.progressContainer}>
                   <div style={styles.progressBarBg}>
-                    <div style={{ ...styles.progressBarFill, width: `${item.progress ?? 0}%` }} />
+                    <div
+                      style={{
+                        ...styles.progressBarFill,
+                        width: `${item.progress ?? 0}%`,
+                        // completed bar turns green
+                        background: (item.progress ?? 0) >= 100 ? '#7CC588' : '#EE6A60',
+                      }}
+                    />
                   </div>
-                  <span style={styles.progressText}>{item.progress ?? 0}%</span>
-                  <span style={styles.trophy}>🏆</span>
+    
+                  {(item.progress ?? 0) >= 100 && (
+                    <img
+                      src="/assets/trophy.png"
+                      alt="Completed"
+                      style={styles.trophy}
+                    />
+                  )}
                 </div>
               </div>
+
+              {/* RIGHT: due date + action button */}
               <div style={styles.itemRight}>
-                {item.due && <div style={styles.dueDate}>Due {item.due}</div>}
-                <button style={styles.actionBtn} onClick={() => handleItemClick(item)}>
-                  {(item.progress ?? 0) > 0 ? 'Continue' : 'Start'}
+                {item.due && (
+                  <div style={styles.dueDate}>Due {item.due}</div>
+                )}
+                <button
+                  style={getButtonStyle(item.progress ?? 0)}
+                  onClick={(e) => handleButtonClick(e, item)}
+                >
+                  {getButtonLabel(item.progress ?? 0)}
                 </button>
               </div>
             </div>
           ))
-        ) : (
-          <p style={{ textAlign: 'center', color: '#8d7b5f' }}>
-            {activeTab === 'ongoing' ? 'No activities in progress.' : 'No completed activities yet.'}
-          </p>
         )}
       </div>
     </section>
@@ -150,3 +196,191 @@ const ClassDetail = ({ cls, onBack }) => {
 };
 
 export default ClassDetail;
+
+// ── Styles ────────────────────────────────────────────────
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
+    paddingRight: '220px',
+    boxSizing: 'border-box',
+    width: '100%',
+    height: '100%',
+  },
+  headerCard: {
+    backgroundColor: '#FFFDF5',
+    padding: '20px 30px',
+    borderRadius: '14px',
+    border: '1px solid #BAAAAA',
+    boxShadow: '0 4px 4px #BAAAAA',
+    cursor: 'pointer',
+  },
+  header: {
+    marginTop: 0,
+    marginBottom: '5px',
+    fontSize: '32px',
+    color: '#6C530E',
+    fontWeight: 'normal',
+  },
+  desc: { fontSize: '16px', color: '#7a6b4a', marginBottom: '8px', marginTop: '8px' },
+  teacher: { textAlign: 'right', color: '#6C530E', fontSize: '14px', margin: 0 },
+
+  tabContainer: {
+    display: 'flex',
+    gap: '120px',
+    marginTop: '30px',
+    marginBottom: '20px',
+    justifyContent: 'center',
+  },
+  activeTab: {
+    background: 'none',
+    border: 'none',
+    fontSize: '16px',
+    borderRadius: '0',
+    fontWeight: 'bold',
+    color: '#EE6A60',
+    cursor: 'pointer',
+    paddingBottom: '8px',
+    outline: 'none',
+    borderBottom: '3px solid #EE6A60',
+  },
+  inactiveTab: {
+    background: 'none',
+    border: 'none',
+    borderRadius: '0',
+    fontSize: '16px',
+    color: '#d4c4a8',
+    cursor: 'pointer',
+    paddingBottom: '8px',
+    outline: 'none',
+    transition: 'border-color 0.2s ease, color 0.2s ease',
+  },
+
+  contentArea: {
+    backgroundColor: '#FFFDF5',
+    borderRadius: '14px',
+    padding: '35px 48px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px',
+    height: '100%',
+    boxSizing: 'border-box',
+    border: '1px solid #BAAAAA',
+    boxShadow: '0 4px 4px #BAAAAA',
+  },
+
+  itemCard: {
+    backgroundColor: '#fcf0c8',
+    padding: '20px 25px',
+    borderRadius: '14px',
+    border: '1px solid #6C530E',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '36px',
+    height: '100px',
+    boxShadow: '0 2px 4px #BAAAAA',
+    cursor: 'pointer',
+  },
+
+  itemLeft: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '36px',
+  },
+  itemRight: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: '32px',
+  },
+
+  itemTitle: {
+    fontSize: '20px',
+    color: '#4a3b20',
+    margin: 0,
+    textAlign: 'left',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  typeBadge: {
+    height: '20px',
+    marginLeft: '12px',
+    width: '60px',
+    textAlign: 'center',
+    backgroundColor: '#7CC588',
+    color: '#fff',
+    borderRadius: '12px',
+    fontSize: '12px',
+    padding: '2px 8px',
+    marginLeft: 'auto',
+    marginRight: '25px',
+  },
+  dueDate: {
+    fontSize: '14px',
+    color: '#4a3b20',
+    textAlign: 'right',
+    fontWeight: '500',
+  },
+
+  progressContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    width: '100%',
+  },
+  progressBarBg: {
+    background: '#fff',
+    flex: 1,
+    height: '16px',
+    borderRadius: '6px',
+    overflow: 'hidden',
+    minWidth: '150px',
+  },
+  progressBarFill: {
+    height: '100%',
+    transition: 'width 0.3s ease',
+  },
+  progressText: {
+    fontSize: '14px',
+    color: '#4a3b20',
+    minWidth: '36px',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+ // trophy: { fontSize: '18px', marginLeft: '-25px', paddingRight: '20px' },
+
+  trophy: {
+    width: '28px',       // ← adjust size here
+    height: '28px',
+    objectFit: 'contain',
+    flexShrink: 0,
+    marginLeft: '-25px', // ← position it overlapping the progress bar
+    paddingRight: '20px',
+  },
+
+  /* ── Start / Continue button (coral) ── */
+  actionBtn: {
+    backgroundColor: '#EE6A60',
+    color: '#fff',
+    border: 'none',
+    padding: '8px 32px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    outline: 'none',
+    boxShadow: '0 2px 4px #6C530E',
+    fontSize: '16px',
+    fontWeight: '500',
+    width: '150px',
+    transition: 'opacity 0.2s ease',
+  },
+
+  /* ── Review button override (outlined, softer) ── */
+  actionBtnReview: {
+    backgroundColor: '#7CC588',
+    color: '#fff',
+    boxShadow: '0 2px 4px #6C530E',
+  },
+};

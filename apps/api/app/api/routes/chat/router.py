@@ -9,7 +9,7 @@ router = APIRouter()
 chat_service = ChatService()
 
 #Rest Endpoint
-@router.post("/", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     reply = chat_service.generate_response(request.user_id, request.messages)
     return ChatResponse(response=reply)

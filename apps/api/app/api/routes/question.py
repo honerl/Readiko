@@ -4,7 +4,7 @@ from app.core.supabase import supabase
 
 router = APIRouter()
 
-@router.post("/")
+@router.post("/create")
 def create_question(data: QuestionCreate):
     response = supabase.table("question").insert(data.model_dump()).execute()
 

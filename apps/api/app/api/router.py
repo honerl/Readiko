@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.routes import health, dbdebug, submission, question, passage
+from app.api.routes import health, dbdebug, submission, question, passage, activity
 from app.api.routes.chat.router import router as chat_router
 
 api_router = APIRouter()
@@ -9,3 +9,4 @@ api_router.include_router(submission.router, tags=["adaptive"])
 api_router.include_router(chat_router, tags=["chat"])
 api_router.include_router(question.router, tags=["questions"])
 api_router.include_router(passage.router, tags=["passages"])
+api_router.include_router(activity.router, tags=["activity"])

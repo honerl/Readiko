@@ -10,10 +10,10 @@ class ClassroomBase(BaseModel):
 
 class Classroom(ClassroomBase):
     c_id: int
-    teacher_uid: UUID
+    teacher_id: UUID
 
 class ClassroomCreate(ClassroomBase):
-    teacher_uid: UUID
+    teacher_id: UUID
 
 class ClassroomUpdate(BaseModel):
     name: str | None = None

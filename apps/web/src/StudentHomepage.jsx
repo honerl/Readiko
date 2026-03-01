@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import ClassDetail from './ClassDetail';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
+import { apiFetch } from './services/api';
 
 // simple module‑level memo to avoid duplicate network requests when
 // React StrictMode mounts/unmounts the component. the ref inside the
@@ -64,6 +65,10 @@ const StudentHomepage = ({ user }) => {
 
     fetchClasses();
   }, [user?.id]);
+
+  useEffect(() => {
+    console.log('[StudentHomepage] classes state changed:', classes);
+  }, [classes]);
 
   const handleJoinClass = async () => {
     const classCode = prompt("Enter Class Code:");

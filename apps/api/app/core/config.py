@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     # `supabase_url`.
     supabase_jwks_url: str | None = None
 
+    # OPEN API KEY
+    gemini_api_key: str = ""
+    RATE_LIMIT_PER_MINUTE: int = 5
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="",

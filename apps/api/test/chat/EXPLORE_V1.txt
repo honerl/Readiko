@@ -1,0 +1,66 @@
+EXPLORE_V1
+
+Session_ID: ccea097e-3411-4026-875e-76ac78067076
+User_ID: 2ecb3eb4-de03-4d8a-90a2-c9062e9e9e4e
+
+Passage: What Generative AI Does
+Generative AI refers to computer systems that create new content—such as text, images, audio, or code—by learning patterns from large amounts of existing data. Models like large language models and generative adversarial networks analyze examples and then produce original outputs that resemble the training material. People use generative AI to draft emails, design images, compose music, and assist with programming, which can speed up creative work and problem-solving. However, these systems can also produce biased, inaccurate, or misleading content, so users must check outputs and consider ethical implications.
+
+Question: In your own words, what is generative AI and name two uses mentioned in the passage?
+
+Answer: Generative AI (GenAI) is a tool that creates various types of content that can range from text-generation to video-generation. One major use of GenAI is to do administrative tasks such as drafting emails. Another use that was mentioned was in helping in professional work such as creative works and problem-solving tasks.
+
+[Score from AI: 4] [Understand]
+
+Feedback: Good answer: you correctly defined generative AI and named drafting emails and creative/problem-solving uses. Be careful claiming "video-generation"—the passage lists images, audio, and code, not video.
+
+Question: What are two risks or limitations of generative AI mentioned in the passage?
+
+Answer: One risk that AI has is that it could be biased, especially because it's content generation is based on the pattern from its data. Another result of this is that AI can create inaccurate or misleading content.
+
+[Score from AI: 1] [Understand]
+
+Feedback: Correct — you named bias and inaccurate or misleading outputs from generative AI. For clarity, briefly connect bias to training data and inaccuracy to needing human verification.
+
+Question: How can biased training data lead a generative AI model to produce biased outputs?
+
+Answer: Since Generative AI "learns" from the patterns that are in the data fed to it during training, AI's generation is then dependent on the inputs. If the inputs are biased, the outputs will be biased.
+
+[Score from AI: 4] [Understand]
+
+Feedback: Good — you correctly link biased inputs to biased outputs. Add how biases are amplified or how underrepresentation and stereotypes cause specific wrong or harmful outputs.
+
+Question: Can you give a specific example of biased training data causing a generative AI to produce a biased output?
+
+Answer: One example of a biased content from GenAI is about opinionated topics such as politics. While AI can infer objective information from political sources, a GenAI can only do this accurately if the data fed have minimal bias. Otherwise, it will side to a specific party or ideology.
+
+[Score from AI: 3] [Understand]
+
+Feedback: Good general idea: political bias is a valid example. Make it more specific by naming a dataset or describing a concrete biased output (e.g., favoring one party's policies).
+
+Question: Can you give a concrete example naming a biased dataset or source and the biased output the model produced?
+
+Answer: I unfortunately can't think of an example right now.
+
+[Score from AI: 20] [Understand] [Incorrect]
+
+Feedback: You didn't provide an example. Try naming a specific dataset and describing a concrete biased output to show understanding.
+
+Question: Can you name one real dataset or source and describe a specific biased output it produced?
+
+Answer: As I've said, I do not know.
+
+[Score from AI: 1] [Understand] [Incorrect]
+
+Summary:
+"summary": {
+    "average_score": 5.5,
+    "mastery_threshold": 75,
+    "skill_level": "Remember",
+    "skill_reason": "Average score 5.5 across session responses.",
+    "turns_used": 6,
+    "max_turns": 6
+  }
+
+
+

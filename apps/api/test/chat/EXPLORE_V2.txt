@@ -1,0 +1,40 @@
+EXPLORE_V2
+
+Session_ID: c8e19955-8fd0-4d60-948b-834c2b012cc2
+User_ID: 2ecb3eb4-de03-4d8a-90a2-c9062e9e9e4e
+
+Passage: The Prodigal Son
+The story of the Prodigal Son tells of a father and his two sons. The younger son asks for his share of the family wealth, leaves home, and quickly squanders the money on extravagant living. Reduced to poverty, he takes a lowly job and decides to return, planning to ask his father for a servant's place. Instead, his father sees him approaching, runs to meet him, and embraces him. He orders a celebration, explains that his son was lost and is found. The elder son, who remained at home and worked dutifully, feels anger and jealousy, unable to accept the warm reception. The father responds to his older son with reassurance of steady love and reminds him that what they have is shared. The passage emphasizes forgiveness and the idea that repentance and reconciliation restore relationships more than punishment does.
+
+Question: What is the main message of the passage?
+
+Answer: The main message of the prodigal son is about how forgiveness is sometimes better than repentance, and that love should outweigh repentance.
+
+[Score 45][incorrect][integrate_interpret][main_idea][medium]
+
+Question: Does the passive say forgiveness is better than repentance, or that repentance and reconciliation restore relationships?
+
+Answer: No. The passive instead said that repentance and reconciliation restore relationships.
+
+[Score 95][correct][reflect_evaluate][author_purpose][medium]
+
+Question: Why does the father prioritize celebration over punishment, and what does that imply about the passage's message?
+
+Answer: The father emphasizes forgiveness, love, and reconciliation rather than repentance and punishment. It conveys that despite making mistakes, fathers, or parents, can still and should find a way to accept and love their children.
+
+[Score 80][correct][access_retrieve][locate_sentence][medium]
+
+Question: Which one sentence from the passage best supports your answer?
+
+Answer: The best sentence that supports my answer would be 'The father responds to his older son with reassurance of steady love and reminds him that what they have is shared.'
+
+[Score 95][correct][integrate_interpret][main_idea][medium]
+
+"summary": {
+    "average_score": 78.75,
+    "mastery_threshold": 75,
+    "skill_level": "integrate_interpret",
+    "skill_reason": "Average score 78.8 across session responses.",
+    "turns_used": 4,
+    "max_turns": 6
+  }

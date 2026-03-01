@@ -117,6 +117,15 @@ function App() {
             } 
           />
 
+          <Route 
+            path="/exam/:classId/:itemId" 
+            element={
+              user 
+                ? <ExamMode user={user} /> 
+                : <Navigate to="/login" />
+            } 
+          />
+
           {/* 4. Default: Redirect to login if path doesn't exist */}
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

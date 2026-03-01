@@ -11,6 +11,7 @@ class ClassroomBase(BaseModel):
 class Classroom(ClassroomBase):
     c_id: int
     teacher_id: UUID
+    class_code: Optional[str] = None
 
 class ClassroomCreate(ClassroomBase):
     teacher_id: UUID

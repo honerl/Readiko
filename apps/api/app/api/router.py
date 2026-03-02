@@ -11,6 +11,7 @@ from app.api.routes import (
     student_activity,
     chat,
     teacher_activities,
+    teacher_question,
 )
 api_router = APIRouter()
 api_router.include_router(health.router, tags=["health"])
@@ -24,3 +25,4 @@ api_router.include_router(question.router, tags=["questions"])
 api_router.include_router(passage.router, tags=["passages"])
 api_router.include_router(student_activity.router, tags=["student_activity"])
 api_router.include_router(teacher_activities.router, tags=["teacher_activities"])
+api_router.include_router(teacher_question.router, tags=["teacher_question"])

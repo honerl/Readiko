@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./TeacherActivities.css";
 import { apiFetch } from "./services/api";
+import AddPassage from "./AddPassage";
 
 const TeacherActivities = ({ cls, onBack }) => {
   const [activities, setActivities] = useState([]);
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [showAddPassage, setShowAddPassage] = useState(false); // ← was missing
+  const [passages, setPassages] = useState([]);
+
   const [form, setForm] = useState({
     topic: "",
     openDate: "",
@@ -14,7 +18,6 @@ const TeacherActivities = ({ cls, onBack }) => {
     testType: "",
   });
 
-  // Fetch activities for this class
   useEffect(() => {
     if (!cls?.c_id) return;
 
@@ -41,6 +44,11 @@ const TeacherActivities = ({ cls, onBack }) => {
     setForm((p) => ({ ...p, [name]: value }));
   };
 
+  const handlePassageAdded = (passage) => {
+    setPassages((prev) => [...prev, passage]);
+    setShowAddPassage(false);
+  };
+
   const onCreateSubmit = async (e) => {
     e.preventDefault();
     if (!form.topic.trim()) return;
@@ -61,8 +69,35 @@ const TeacherActivities = ({ cls, onBack }) => {
       if (!response.ok) throw new Error("Failed to create activity");
       const newActivity = await response.json();
       console.log("[TeacherActivities] Activity created:", newActivity);
-      setActivities((prev) => [newActivity, ...prev]);
 
+      // Save passages and questions
+      for (const passage of passages) {
+        const passageRes = await apiFetch("/passages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            activity_id: newActivity.a_id,
+            title: passage.title,
+            content: passage.content,
+          }),
+        });
+        if (passageRes.ok) {
+          const newPassage = await passageRes.json();
+          for (const q of passage.questions) {
+            await apiFetch("/questions", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                passage_id: newPassage.p_id,
+                q_text: q.q_text,
+                difficulty_level: q.score,
+              }),
+            });
+          }
+        }
+      }
+
+      setActivities((prev) => [newActivity, ...prev]);
       setForm({
         topic: "",
         openDate: "",
@@ -70,6 +105,7 @@ const TeacherActivities = ({ cls, onBack }) => {
         timeLimit: "While the activity is still open",
         testType: "",
       });
+      setPassages([]);
       setShowCreate(false);
     } catch (err) {
       console.error("[TeacherActivities] Failed to create activity:", err);
@@ -85,6 +121,12 @@ const TeacherActivities = ({ cls, onBack }) => {
       hour: "numeric",
       minute: "2-digit",
     });
+  };
+
+  const closeAll = () => {
+    setShowCreate(false);
+    setShowAddPassage(false);
+    setPassages([]);
   };
 
   return (
@@ -104,7 +146,6 @@ const TeacherActivities = ({ cls, onBack }) => {
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Header Card */}
         <div className="class-header">
           <div>
             <button onClick={onBack} style={{ marginBottom: "0.5rem", cursor: "pointer" }}>
@@ -115,13 +156,11 @@ const TeacherActivities = ({ cls, onBack }) => {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="tabs">
           <span className="active-tab">Activities</span>
           <span>Class Record</span>
         </div>
 
-        {/* Activities Section */}
         <div className="activities-container">
           {loadingActivities ? (
             <p>Loading activities...</p>
@@ -151,94 +190,105 @@ const TeacherActivities = ({ cls, onBack }) => {
         </div>
       </div>
 
-      {/* Overlay + Drawer */}
-      {showCreate && (
-        <div className="ta-overlay" onClick={() => setShowCreate(false)}>
-          <aside className="ta-drawer" onClick={(e) => e.stopPropagation()}>
-            <div className="ta-drawerHeader">
-              <button className="ta-back" onClick={() => setShowCreate(false)}>
-                ←
-              </button>
-              <div className="ta-drawerTitle">Create Activity</div>
-            </div>
-
-            <form className="ta-form" onSubmit={onCreateSubmit}>
-              <input
-                className="ta-inputLine"
-                name="topic"
-                value={form.topic}
-                onChange={onChange}
-                placeholder="Activity Name"
-              />
-
-              <div className="ta-row">
-                <label className="ta-label">
-                  Open Date &amp; Time
-                  <input
-                    className="ta-inputBox"
-                    type="datetime-local"
-                    name="openDate"
-                    value={form.openDate}
-                    onChange={onChange}
-                  />
-                </label>
-
-                <label className="ta-label">
-                  Due Date &amp; Time
-                  <input
-                    className="ta-inputBox"
-                    type="datetime-local"
-                    name="dueDate"
-                    value={form.dueDate}
-                    onChange={onChange}
-                  />
-                </label>
+      {/* Overlay */}
+      {(showCreate || showAddPassage) && (
+        <div className="ta-overlay" onClick={closeAll}>
+          {showAddPassage ? (
+            <AddPassage
+              onBack={() => setShowAddPassage(false)}
+              onAdd={handlePassageAdded}
+            />
+          ) : (
+            <aside className="ta-drawer" onClick={(e) => e.stopPropagation()}>
+              <div className="ta-drawerHeader">
+                <button className="ta-back" onClick={() => setShowCreate(false)}>←</button>
+                <div className="ta-drawerTitle">Create Activity</div>
               </div>
 
-              <div className="ta-row">
-                <label className="ta-label">
-                  Time Limit
-                  <select
-                    className="ta-inputBox"
-                    name="timeLimit"
-                    value={form.timeLimit}
-                    onChange={onChange}
+              <form className="ta-form" onSubmit={onCreateSubmit}>
+                <input
+                  className="ta-inputLine"
+                  name="topic"
+                  value={form.topic}
+                  onChange={onChange}
+                  placeholder="Activity Name"
+                />
+
+                <div className="ta-row">
+                  <label className="ta-label">
+                    Open Date &amp; Time
+                    <input
+                      className="ta-inputBox"
+                      type="datetime-local"
+                      name="openDate"
+                      value={form.openDate}
+                      onChange={onChange}
+                    />
+                  </label>
+                  <label className="ta-label">
+                    Due Date &amp; Time
+                    <input
+                      className="ta-inputBox"
+                      type="datetime-local"
+                      name="dueDate"
+                      value={form.dueDate}
+                      onChange={onChange}
+                    />
+                  </label>
+                </div>
+
+                <div className="ta-row">
+                  <label className="ta-label">
+                    Time Limit
+                    <select className="ta-inputBox" name="timeLimit" value={form.timeLimit} onChange={onChange}>
+                      <option>While the activity is still open</option>
+                      <option>15 minutes</option>
+                      <option>30 minutes</option>
+                      <option>60 minutes</option>
+                    </select>
+                  </label>
+                  <label className="ta-label">
+                    Test Type
+                    <select className="ta-inputBox" name="testType" value={form.testType} onChange={onChange}>
+                      <option value="">Select type</option>
+                      <option value="lesson">Lesson</option>
+                      <option value="exam">Exam</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div className="ta-passages">
+                  <div className="ta-passagesTitle">Passages</div>
+                  {passages.map((p, i) => (
+                    <div key={i} className="ta-passageItem">
+                      <span>{p.title}</span>
+                      <button
+                        type="button"
+                        className="ta-removeQ"
+                        onClick={() => setPassages((prev) => prev.filter((_, idx) => idx !== i))}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="ta-addPassage"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowAddPassage(true);
+                    }}
                   >
-                    <option>While the activity is still open</option>
-                    <option>15 minutes</option>
-                    <option>30 minutes</option>
-                    <option>60 minutes</option>
-                  </select>
-                </label>
+                    + Add Passage
+                  </button>
+                </div>
 
-                <label className="ta-label">
-                  Test Type
-                  <select
-                    className="ta-inputBox"
-                    name="testType"
-                    value={form.testType}
-                    onChange={onChange}
-                  >
-                    <option value="">Select type</option>
-                    <option value="lesson">Lesson</option>
-                    <option value="exam">Exam</option>
-                  </select>
-                </label>
-              </div>
-
-              {/* Passages section placeholder */}
-              <div className="ta-passages">
-                <div className="ta-passagesTitle">Passages</div>
-                <div className="ta-addPassage">+ Add Passage</div>
-              </div>
-
-              <div className="ta-actions">
-                <button className="ta-createBtn" type="submit">
-                  Create
-                </button>
-              </div>
-            </form>
-          </aside>
+                <div className="ta-actions">
+                  <button className="ta-createBtn" type="submit">Create</button>
+                </div>
+              </form>
+            </aside>
+          )}
         </div>
       )}
     </div>

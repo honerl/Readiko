@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from app.api.routes import health, dbdebug, auth, classroom, submission, question, passage, teacher_classroom, student_activity, teacher_activities
 from app.api.routes import (
     health,
     dbdebug,
@@ -11,6 +10,7 @@ from app.api.routes import (
     teacher_classroom,
     student_activity,
     chat,
+    teacher_activities,
 )
 api_router = APIRouter()
 api_router.include_router(health.router, tags=["health"])

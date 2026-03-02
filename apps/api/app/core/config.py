@@ -19,8 +19,8 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: str = ""
     # LLM
-    llm_provider: str = "gemini"
-    llm_model: str = "gemini-2.5-flash"
+    llm_provider: str = "openai"
+    llm_model: str = "gpt-5o-mini"
 
     RATE_LIMIT_PER_MINUTE: int = 5
 

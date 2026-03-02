@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./TeacherHome.css";
 import { supabase } from "./services/supabaseClient";
+import TeacherActivities from "./TeacherActivities";
 
 // module-level memo to avoid duplicate fetches during remounts
 let lastTeacherIdFetched = null;
@@ -9,6 +10,7 @@ export default function TeacherHome({ user }) {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [currentClass, setCurrentClass] = useState(null);
 
   const [form, setForm] = useState({
     className: "",
@@ -118,6 +120,11 @@ export default function TeacherHome({ user }) {
 
   if (loading) return <div style={{ padding: "2rem" }}>Loading...</div>;
 
+   // Show TeacherActivities when a class is selected
+  if (currentClass) {
+    return <TeacherActivities cls={currentClass} onBack={() => setCurrentClass(null)} />;
+  }
+
   return (
     <div className="th-page">
       <aside className="th-sidebar">
@@ -142,22 +149,23 @@ export default function TeacherHome({ user }) {
         <section className="th-panel">
           <div className="th-grid">
             {classes.map((c) => (
-              <div key={c.id} className="th-classCard">
+              <div 
+                key={c.c_id} 
+                className="th-classCard"
+                onClick={() => setCurrentClass(c)}  // ← add this
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="th-className">{c.name}</div>
                 <div className="th-classDesc">{c.description}</div>
                 <div className="th-classTeacher">{user.email}</div>
 
-                {/* Copy Class Code button */}
                 <button
                   className="th-copyBtn"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation(); // ← prevent card click when copying
                     navigator.clipboard.writeText(c.class_code)
-                      .then(() => {
-                        alert(`Class code "${c.class_code}" copied!`);
-                      })
-                      .catch((err) => {
-                        console.error("Failed to copy class code:", err);
-                      });
+                      .then(() => alert(`Class code "${c.class_code}" copied!`))
+                      .catch((err) => console.error("Failed to copy class code:", err));
                   }}
                 >
                   Copy Class Code

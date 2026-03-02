@@ -1,0 +1,299 @@
+/* Layout */
+.teacher-activities-container {
+  display: flex;
+  height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4ead7; /* light beige background */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background-color: #e6d3a3; /* warm beige */
+  padding: 30px 20px;
+  border-right: 2px solid #d4b56f;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #2f3e1f; /* dark green */
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 20px 0;
+  cursor: pointer;
+  color: #2f3e1f;
+}
+
+.sidebar li:hover {
+  font-weight: bold;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 40px;
+}
+
+/* Header Card */
+.class-header {
+  background-color: #f6f1e5;
+  border-radius: 10px;
+  padding: 25px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.class-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.class-header p {
+  margin-top: 8px;
+  color: #555;
+}
+
+.teacher-name {
+  color: #2f3e1f;
+  font-weight: 500;
+}
+
+/* Tabs */
+.tabs {
+  margin-top: 25px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 30px;
+  font-weight: 500;
+}
+
+.tabs span {
+  cursor: pointer;
+}
+
+.active-tab {
+  color: #d45a4f; /* muted red accent */
+  border-bottom: 2px solid #d45a4f;
+  padding-bottom: 5px;
+}
+
+/* Activities Section */
+.activities-container {
+  background-color: #f6f1e5;
+  border-radius: 10px;
+  padding: 30px;
+  min-height: 400px;
+  position: relative;
+}
+
+/* Activity Card */
+.activity-card {
+  background-color: #f0dfb6;
+  border-radius: 8px;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.activity-left h3 {
+  margin: 0 0 10px 0;
+}
+
+.activity-left p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.activity-right {
+  text-align: right;
+}
+
+.points {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.review-btn {
+  background-color: #e06759; /* coral red */
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.review-btn:hover {
+  opacity: 0.9;
+}
+
+/* Create Button */
+.create-btn-wrapper {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+}
+
+.create-btn {
+  background-color: #2f3e1f; /* dark green */
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 30px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.create-btn:hover {
+  opacity: 0.9;
+}
+
+/* ── Create Activity Drawer ── */
+.ta-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ta-drawer {
+  background: #fff;
+  width: 560px;
+  height: 100%;
+  padding: 30px;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.12);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ta-drawerHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.ta-back {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #2f3e1f;
+}
+
+.ta-drawerTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2f3e1f;
+}
+
+.ta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ta-inputLine {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  font-size: 18px;
+  padding: 8px 0;
+  outline: none;
+  background: transparent;
+  color: #aaa;
+}
+
+.ta-inputLine::placeholder {
+  color: #aaa;
+}
+
+.ta-row {
+  display: flex;
+  gap: 20px;
+}
+
+.ta-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.ta-inputBox {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ta-passages {
+  background: #f4f4f4;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ta-passagesTitle {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.ta-addPassage {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ta-addPassage:hover {
+  background: #e8e8e8;
+}
+
+.ta-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ta-createBtn {
+  background-color: #d4d4d4;
+  color: #333;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 20px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ta-createBtn:hover {
+  background-color: #bbb;
+}

@@ -146,6 +146,22 @@ export default function TeacherHome({ user }) {
                 <div className="th-className">{c.name}</div>
                 <div className="th-classDesc">{c.description}</div>
                 <div className="th-classTeacher">{user.email}</div>
+
+                {/* Copy Class Code button */}
+                <button
+                  className="th-copyBtn"
+                  onClick={() => {
+                    navigator.clipboard.writeText(c.class_code)
+                      .then(() => {
+                        alert(`Class code "${c.class_code}" copied!`);
+                      })
+                      .catch((err) => {
+                        console.error("Failed to copy class code:", err);
+                      });
+                  }}
+                >
+                  Copy Class Code
+                </button>
               </div>
             ))}
 

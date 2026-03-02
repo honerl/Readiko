@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pytest import MonkeyPatch
 
-import app.api.routes.chat.router as chat_router_module
+import app.api.routes.chat as chat_router_module
 from app.models.chat import (
     ExploreEvaluationSummary,
     ExploreSessionAnswerResponse,
@@ -19,8 +19,11 @@ class FakeChatService:
             passage_title="T1",
             passage_content="Passage content",
             ai_message="Q1",
+            process_focus="access_retrieve",
+            subskill="key_detail",
+            difficulty="easy",
             current_turn=0,
-            max_turns=5,
+            max_turns=6,
         )
 
     def submit_explore_answer(self, session_id: str, user_id: str, answer: str):
@@ -32,23 +35,40 @@ class FakeChatService:
                 session_id=session_id,
                 status=SessionStatus.completed,
                 ai_message="Completed",
-                score=88.0,
+                score=88,
+                is_correct=True,
+                feedback="Strong understanding.",
+                follow_up_question="",
+                hint="",
+                process_focus="integrate_interpret",
+                subskill="main_idea",
+                error_type="none",
+                difficulty="medium",
                 current_turn=1,
                 should_continue=False,
                 summary=ExploreEvaluationSummary(
                     average_score=88.0,
                     mastery_threshold=75.0,
-                    skill_level="Advanced",
+                    skill_level="integrate_interpret",
+                    skill_reason="Average score 88.0 across session responses.",
                     turns_used=1,
-                    max_turns=5,
+                    max_turns=6,
                 ),
             )
 
         return ExploreSessionAnswerResponse(
             session_id=session_id,
             status=SessionStatus.in_progress,
-            ai_message="Feedback\n\nFollow-up: Q2",
-            score=62.0,
+            ai_message="Q2",
+            score=62,
+            is_correct=False,
+            feedback="Feedback",
+            follow_up_question="Q2",
+            hint="Use one detail from the passage.",
+            process_focus="access_retrieve",
+            subskill="locate_sentence",
+            error_type="vague",
+            difficulty="easy",
             current_turn=1,
             should_continue=True,
             summary=None,

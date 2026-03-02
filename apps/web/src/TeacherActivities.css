@@ -297,3 +297,89 @@
 .ta-createBtn:hover {
   background-color: #bbb;
 }
+
+/* Passage items in Create Activity drawer */
+.ta-passageItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+/* Question row in AddPassage */
+.ta-questionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ta-questionInput {
+  flex: 1;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+.ta-scoreInput {
+  width: 60px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 8px;
+  font-size: 14px;
+  outline: none;
+  text-align: center;
+}
+
+.ta-removeQ {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  font-size: 14px;
+}
+
+.ta-addQuestionBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 14px;
+  padding: 4px 0;
+}
+
+.ta-textarea {
+  width: 100%;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.ta-addPassage {
+  background: transparent;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 14px;
+  width: 100%;
+  text-align: center;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ta-addPassage:hover {
+  background: #e8e8e8;
+}

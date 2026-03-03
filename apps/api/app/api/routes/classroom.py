@@ -172,3 +172,41 @@ async def join_class(
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.get("/{class_id}/students")
+def get_students_in_class(class_id: int) -> list[dict[str, Any]]:
+
+    # 1️⃣ Get student IDs enrolled in class
+    enrollment_response = (
+        supabase
+        .table("student_classrooms")
+        .select("student_id")
+        .eq("classroom_id", class_id)
+        .execute()
+    )
+    
+    data: list[dict[str, Any]] = cast(list[dict[str, Any]], enrollment_response.data or [])
+
+    student_id = [row["student_id"] for row in data]
+
+    if not student_id:
+        return []
+
+    # 2️⃣ Get student details
+    students_response =  cast(
+        Any,
+        supabase
+        .table("users")
+        .select("uid, fname, lname")
+        .in_("uid", student_id)
+        .execute()
+    )
+
+    students = students_response.data
+
+    # 3️⃣ (Optional) Add average placeholder for now
+    for s in students:
+        s["average"] = 0
+
+    return students

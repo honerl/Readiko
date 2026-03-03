@@ -96,25 +96,38 @@
   position: relative;
   box-sizing: border-box;
   overflow-x: hidden;
+  /* Prevent the content area itself from overflowing vertically */
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .th-title {
   font-size: 32px;
   color: #153204;
-;
   margin: 0 0 20px;
   font-weight: normal;
+  flex-shrink: 0;
 }
 
 .th-panel {
   width: 100%;
-  height: calc(100% - 100px);
+  /* Fill remaining height after the title */
+  flex: 1;
+  min-height: 0;
   background: #FFFDF5;
   border: 1px solid #BAAAAA;
   border-radius: 14px;
   box-shadow: 0 4px 4px #BAAAAA;
   padding: 35px 48px;
   box-sizing: border-box;
+  /* Scrollable, hidden scrollbar */
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.th-panel::-webkit-scrollbar {
+  display: none;
 }
 
 /* Grid */
@@ -129,11 +142,70 @@
   background: #fcf0c8;
   border: 1px solid #6C530E;
   border-radius: 14px;
-  padding: 20px 25px;
+  padding: 15px 20px;
   box-shadow: 0 2px 4px #BAAAAA;
-  min-height: 120px;
+  min-height: 100px;
   display: flex;
   flex-direction: column;
+  position: relative; /* for absolutely positioned menu */
+}
+
+/* three-dot menu in top-right corner of card */
+.th-cardMenu {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.th-menuButton {
+  color: #6C530E;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.th-menuButton:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.th-menuOptions {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  min-width: 120px;
+}
+
+.th-menuOptions button {
+  display: block;
+  width: 100%;
+  padding: 8px 0; /* horizontal centering via text-align */
+  background: none;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.th-menuOptions button:hover {
+  background-color: #f0f0f0;
+}
+
+/* icon next to menu item text */
+.th-menuIcon {
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  vertical-align: middle;
 }
 
 .th-className {
@@ -144,19 +216,19 @@
 }
 
 .th-classDesc {
-  font-size: 16px;
+  font-size: 14px;
   color: #7a6b4a;
-  margin: 0 0 15px;
-  min-height: 44px;
+  margin: 0 0 8px;
+  min-height: 28px;
 }
 
 .th-classTeacher {
+  margin-top: 8px;
   font-size: 14px;
   text-align: right;
   color: #6C530E;
   font-style: italic;
   font-weight: bold;
-  margin-top: auto;
 }
 
 /* + Create card */
@@ -416,43 +488,3 @@
   transform: scale(0.97);
 }
 
-.th-createBtn:focus,
-.th-createBtn:focus-visible,
-.th-createBtn:active {
-  outline: none;
-  box-shadow: 0 2px 4px #BAAAAA;
-}
-
-.th-createBtn:active {
-  transform: scale(0.97);
-}
-
-.th-copyBtn {
-  margin-top: 0.5rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.85rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.th-copyBtn:hover {
-  background-color: #0056b3;
-}
-
-.th-copyBtn {
-  margin-top: 0.5rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.85rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.th-copyBtn:hover {
-  background-color: #0056b3;
-}

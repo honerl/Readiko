@@ -3,6 +3,7 @@ import "./TeacherActivities.css";
 import { apiFetch } from "./services/api";
 import AddPassage from "./AddPassage";
 import { supabase } from "./services/supabaseClient";
+import StudentStatistics from "./StudentStatistics";
 
 const TeacherActivities = ({ cls, onBack }) => {
   const [activities, setActivities] = useState([]);
@@ -15,6 +16,7 @@ const TeacherActivities = ({ cls, onBack }) => {
   const [students, setStudents] = useState([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null); // used for profile overlay
 
   const [form, setForm] = useState({
     topic: "",
@@ -175,6 +177,19 @@ const TeacherActivities = ({ cls, onBack }) => {
     setShowCreate(false);
     setShowAddPassage(false);
     setPassages([]);
+    setSelectedStudent(null);
+  };
+
+  // click handler for activity card (mimic student behaviour)
+  const handleActivityClick = (a) => {
+    // TODO: navigate or open details
+    console.log("[TeacherActivities] card clicked", a);
+  };
+
+  const handleReviewClick = (e, a) => {
+    e.stopPropagation();
+    console.log("[TeacherActivities] review button clicked", a);
+    // additional logic can go here
   };
 
   const handleLogout = async () => {
@@ -207,11 +222,15 @@ const TeacherActivities = ({ cls, onBack }) => {
 
       {/* Main Content */}
       <div className="main-content">
+        {/* separate back button container */}
+        <div className="back-container">
+          <button className="back-btn" onClick={onBack} aria-label="Back">
+            <img src="/assets/backbtn.png" alt="Back" />
+          </button>
+        </div>
+
         <div className="class-header">
           <div>
-            <button onClick={onBack} style={{ marginBottom: "0.5rem", cursor: "pointer" }}>
-              ← Back
-            </button>
             <h1>{cls?.name}</h1>
             <p>{cls?.description}</p>
           </div>
@@ -241,31 +260,39 @@ const TeacherActivities = ({ cls, onBack }) => {
                 <p style={{ color: "#888" }}>No activities yet. Create one!</p>
               ) : (
                 activities.map((a) => (
-                  <div key={a.a_id} className="activity-card">
-                    <div className="activity-top">
-                      <h3>{a.topic}</h3>
-                      <p className="activity-status">
-                        Status: <span>{getActivityStatus(a.close_date)}</span>
-                      </p>
-                      <p className="activity-due">Due {formatDate(a.close_date)}</p>
+                  <div
+                    key={a.a_id}
+                    className="activity-card"
+                    onClick={() => handleActivityClick(a)}
+                  >
+                    <div className="activity-left">
+                      <h3 className="activity-title">{a.topic}</h3>
                     </div>
 
-                    <div className="activity-bottom">
-                      <div className="activity-meta">
-                        <p>Open {formatDate(a.open_date)}</p>
-                        <p>Type: {a.type_of_activity || "—"}</p>
+                    <div className="activity-centre">
+                      <div className="activity-status">
+                        Status: <span>{getActivityStatus(a.close_date)}</span>
                       </div>
-                      <button className="review-btn">View</button>
+                      <div className="activity-counts">
+                        Done: {a.done ?? 0} | Pending: {a.pending ?? 0}
+                      </div>
+                      <div className="activity-timeLimit">
+                        Time limit: {a.time_limit || "none"}
+                      </div>
+                    </div>
+
+                    <div className="activity-right">
+                      <div className="activity-due">Due {formatDate(a.close_date)}</div>
+                      <button
+                        className="review-btn"
+                        onClick={(e) => handleReviewClick(e, a)}
+                      >
+                        View
+                      </button>
                     </div>
                   </div>
                 ))
               )}
-
-              <div className="create-btn-wrapper">
-                <button className="create-btn" onClick={() => setShowCreate(true)}>
-                  + Create Activity
-                </button>
-              </div>
             </>
           ) : (
             <>
@@ -303,7 +330,10 @@ const TeacherActivities = ({ cls, onBack }) => {
 
                       {openMenuId === s.u_id && (
                         <div className="dropdown-menu">
-                          <div onClick={() => alert("Open class profile")}>
+                          <div onClick={() => {
+                              setSelectedStudent(s);
+                              setOpenMenuId(null);
+                            }}>
                             Class Profile
                           </div>
                           <div
@@ -321,16 +351,32 @@ const TeacherActivities = ({ cls, onBack }) => {
             </>
           )}
         </div>
+
+        {/* create button outside scrollable list */}
+        {activeTab === "activities" && (
+          <div className="create-btn-wrapper">
+            <button className="create-btn" onClick={() => setShowCreate(true)}>
+              + Create Activity
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Overlay */}
-      {(showCreate || showAddPassage) && (
+      {(showCreate || showAddPassage || selectedStudent) && (
         <div className="ta-overlay" onClick={closeAll}>
           {showAddPassage ? (
             <AddPassage
               onBack={() => setShowAddPassage(false)}
               onAdd={handlePassageAdded}
             />
+          ) : selectedStudent ? (
+            <aside className="ta-drawer" style={{width:'min(600px,90vw)'}} onClick={(e) => e.stopPropagation()}>
+              <button className="ta-back" onClick={() => setSelectedStudent(null)} aria-label="Back">
+                <img src="/assets/backbtn.png" alt="Back" />
+              </button>
+              <StudentStatistics student={selectedStudent} />
+            </aside>
           ) : (
             <aside className="ta-drawer" onClick={(e) => e.stopPropagation()}>
               <div className="ta-drawerHeader">

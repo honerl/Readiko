@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
 import { apiFetch } from './services/api';
 import { supabase } from './services/supabaseClient';
+import TeacherActivities from './TeacherActivities';
 
 // simple module‑level memo to avoid duplicate network requests when
 // React StrictMode mounts/unmounts the component. the ref inside the

@@ -582,7 +582,7 @@ class ChatService:
             passage_words = len(passage.split())
             if not passage or not question:
                 raise ValueError("Missing passage/question fields")
-            if passage_words < 120 or passage_words > 180:
+            if passage_words < 80 or passage_words > 220:
                 raise ValueError("Passage length is out of bounds")
 
             question = self._sanitize_follow_up_question(

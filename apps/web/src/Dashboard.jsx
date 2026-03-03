@@ -320,7 +320,7 @@ const Dashboard = ({
                   <button
                     className="explore-start-btn"
                     style={styles.exploreBtn}
-                    onClick={() => { navigate(`/explore/${encodeURIComponent(item.title)}`); }}
+                    onClick={() => navigate(`/explore/${encodeURIComponent(item.title)}`)}
                   >
                     Start
                   </button>

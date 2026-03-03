@@ -283,11 +283,7 @@ const Dashboard = ({
                   <button
                     className="explore-start-btn"
                     style={styles.exploreBtn}
-                    onClick={() => {
-                    if (item.id === "exp-1") {
-                        navigate("/explore");
-                    }
-                    }}
+                    onClick={() => { if (item.id === "exp-1") { navigate(`/explore/${encodeURIComponent(item.title)}`); } }}
                   >
                     Start
                   </button>

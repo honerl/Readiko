@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./TeacherActivities.css";
 import { apiFetch } from "./services/api";
 import AddPassage from "./AddPassage";
+import { supabase } from "./services/supabaseClient";
 
 const TeacherActivities = ({ cls, onBack }) => {
   const [activities, setActivities] = useState([]);
@@ -91,7 +92,7 @@ const TeacherActivities = ({ cls, onBack }) => {
   };
 
   const handlePassageAdded = (passage) => {
-    setPassages((prev) => [...prev, passage]);
+    setPassages((prev) => [passage, ...prev]);
     setShowAddPassage(false);
   };
 
@@ -169,6 +170,11 @@ const TeacherActivities = ({ cls, onBack }) => {
     });
   };
 
+  const getActivityStatus = (closeDate) => {
+    if (!closeDate) return "Open";
+    return new Date(closeDate) > new Date() ? "Open" : "Closed";
+  };
+
   const closeAll = () => {
     setShowCreate(false);
     setShowAddPassage(false);
@@ -176,19 +182,33 @@ const TeacherActivities = ({ cls, onBack }) => {
   };
   
 
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
+
   return (
     <div className="teacher-activities-container">
       {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="logo">Readiko</div>
-        <nav>
-          <ul>
-            <li>Learn</li>
-            <li>Achievements</li>
-            <li>Shop</li>
-            <li>Profile</li>
-          </ul>
+      <aside className="student-sidebar">
+        <img src={'/assets/logo2.png'} alt="ReadiKo Logo" className="sidebar-logo" />
+
+        <nav className="sidebar-nav">
+          <select className="sidebar-select" defaultValue="classes">
+            <option value="classes">Classes</option>
+          </select>
+
+          <button className="sidebar-link">Profile</button>
         </nav>
+
+        <div className="sidebar-footer">
+          <button className="sidebar-link logout-link" onClick={handleLogout}>
+            Log Out
+          </button>
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -219,32 +239,28 @@ const TeacherActivities = ({ cls, onBack }) => {
         </div>
 
         <div className="activities-container">
-          {activeTab === "activities" ? (
-            <>
-              {loadingActivities ? (
-                <p>Loading activities...</p>
-              ) : activities.length === 0 ? (
-                <p style={{ color: "#888" }}>No activities yet. Create one!</p>
-              ) : (
-                activities.map((a) => (
-                  <div key={a.a_id} className="activity-card" style={{ marginBottom: "12px" }}>
-                    <div className="activity-left">
-                      <h3>{a.topic}</h3>
-                      <p>Open {formatDate(a.open_date)}</p>
-                      <p>Due {formatDate(a.close_date)}</p>
-                    </div>
-                    <div className="activity-right">
-                      <span className="points">{a.type_of_activity || "—"}</span>
-                      <button className="review-btn">Review</button>
-                    </div>
-                  </div>
-                ))
-              )}
+          {loadingActivities ? (
+            <p>Loading activities...</p>
+          ) : activities.length === 0 ? (
+            <p style={{ color: "#888" }}>No activities yet. Create one!</p>
+          ) : (
+            activities.map((a) => (
+              <div key={a.a_id} className="activity-card">
+                <div className="activity-top">
+                  <h3>{a.topic}</h3>
+                  <p className="activity-status">
+                    Status: <span>{getActivityStatus(a.close_date)}</span>
+                  </p>
+                  <p className="activity-due">Due {formatDate(a.close_date)}</p>
+                </div>
 
-              <div className="create-btn-wrapper">
-                <button className="create-btn" onClick={() => setShowCreate(true)}>
-                  + Create Activity
-                </button>
+                <div className="activity-bottom">
+                  <div className="activity-meta">
+                    <p>Open {formatDate(a.open_date)}</p>
+                    <p>Type: {a.type_of_activity || "—"}</p>
+                  </div>
+                  <button className="review-btn">View</button>
+                </div>
               </div>
             </>
           ) : (
@@ -314,7 +330,9 @@ const TeacherActivities = ({ cls, onBack }) => {
           ) : (
             <aside className="ta-drawer" onClick={(e) => e.stopPropagation()}>
               <div className="ta-drawerHeader">
-                <button className="ta-back" onClick={() => setShowCreate(false)}>←</button>
+                <button className="ta-back" onClick={() => setShowCreate(false)} aria-label="Back">
+                  <img src="/assets/backbtn.png" alt="Back" />
+                </button>
                 <div className="ta-drawerTitle">Create Activity</div>
               </div>
 
@@ -372,28 +390,30 @@ const TeacherActivities = ({ cls, onBack }) => {
 
                 <div className="ta-passages">
                   <div className="ta-passagesTitle">Passages</div>
-                  {passages.map((p, i) => (
-                    <div key={i} className="ta-passageItem">
-                      <span>{p.title}</span>
-                      <button
-                        type="button"
-                        className="ta-removeQ"
-                        onClick={() => setPassages((prev) => prev.filter((_, idx) => idx !== i))}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="ta-addPassage"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowAddPassage(true);
-                    }}
-                  >
-                    + Add Passage
-                  </button>
+                  <div className="ta-passagesList">
+                    {passages.map((p, i) => (
+                      <div key={i} className="ta-passageItem">
+                        <span>{p.title}</span>
+                        <button
+                          type="button"
+                          className="ta-removeQ"
+                          onClick={() => setPassages((prev) => prev.filter((_, idx) => idx !== i))}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="ta-addPassage"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowAddPassage(true);
+                      }}
+                    >
+                      + Add Passage
+                    </button>
+                  </div>
                 </div>
 
                 <div className="ta-actions">

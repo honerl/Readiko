@@ -10,7 +10,9 @@ import { supabase } from './services/supabaseClient';
 // component is reset on unmount, but this variable persists across
 // re‑mounts for the lifetime of the page. we also clear it when the
 // user logs out so a future login with the same id will re‑fetch.
-let lastStudentIdFetched = null;
+  
+// Bug Fix: This line of code was causing issues with fetching classes when the user logs out and logs back in. By keeping track of the last fetched student ID, we can ensure that classes are fetched correctly for each user session. However, if this variable is not reset on logout, it can lead to stale data being displayed for a new user. Therefore, we need to reset this variable when the user logs out to ensure that the correct classes are fetched for each user session.
+// let lastStudentIdFetched = null;
 
 const StudentHomepage = ({ user }) => {
   const [classes, setClasses] = useState([]);
@@ -31,14 +33,15 @@ const StudentHomepage = ({ user }) => {
     if (!user?.id) return;
 
     // if we already fetched for this student during this session, skip.
-    if (lastStudentIdFetched === user.id) {
-      console.log('[StudentHomepage] skipping fetch – already loaded');
-      // the component may have been remounted so loading reset to true
-      setLoading(false);
-      return;
-    }
+    // if (lastStudentIdFetched === user.id) {
+    //   console.log('[StudentHomepage] skipping fetch – already loaded');
+    //   // the component may have been remounted so loading reset to true
+    //   setLoading(true);
+    //   return;
+    // }
 
-    lastStudentIdFetched = user.id;
+
+    // lastStudentIdFetched = user.id;
 
     const fetchClasses = async () => {
       try {

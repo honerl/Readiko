@@ -131,6 +131,7 @@ function App() {
           />
 
           <Route path="/explore/:topic" element={<LessonMode />} />
+          <Route path="/exam/:activityId" element={<ExamMode />} />
 
           {/* 4. Default: Redirect to login if path doesn't exist */}
           <Route path="*" element={<Navigate to="/login" />} />

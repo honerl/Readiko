@@ -8,10 +8,9 @@ const TeacherActivities = ({ cls, onBack }) => {
   const [activities, setActivities] = useState([]);
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
-  const [showAddPassage, setShowAddPassage] = useState(false); // ← was missing
+  const [showAddPassage, setShowAddPassage] = useState(false);
   const [passages, setPassages] = useState([]);
-  
-  // New features
+
   const [activeTab, setActiveTab] = useState("activities");
   const [students, setStudents] = useState([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
@@ -54,28 +53,26 @@ const TeacherActivities = ({ cls, onBack }) => {
   }, [cls?.c_id]);
 
   useEffect(() => {
-  if (!cls?.c_id || activeTab !== "records") return;
+    if (!cls?.c_id || activeTab !== "records") return;
 
-  const fetchStudents = async () => {
-    try {
-      setLoadingStudents(true);
-      console.log("[TeacherActivities] Fetching students for class:", cls.c_id);
+    const fetchStudents = async () => {
+      try {
+        setLoadingStudents(true);
+        console.log("[TeacherActivities] Fetching students for class:", cls.c_id);
 
-      const res = await apiFetch(`/classes/${cls.c_id}/students`);
-      if (!res.ok) throw new Error("Failed to fetch students");
+        const res = await apiFetch(`/classes/${cls.c_id}/students`);
+        if (!res.ok) throw new Error("Failed to fetch students");
 
-      const data = await res.json();
-      console.log("[TeacherActivities] Students loaded:", data);
+        const data = await res.json();
+        console.log("[TeacherActivities] Students loaded:", data);
 
-      // Sort by average descending and compute rank
-      const sorted = [...data].sort((a, b) => b.average - a.average);
+        const sorted = [...data].sort((a, b) => b.average - a.average);
+        const ranked = sorted.map((student, index) => ({
+          ...student,
+          rank: index + 1,
+        }));
 
-      const ranked = sorted.map((student, index) => ({
-        ...student,
-        rank: index + 1,
-      }));
-
-      setStudents(ranked);
+        setStudents(ranked);
       } catch (err) {
         console.error("[TeacherActivities] Failed to load students:", err);
       } finally {
@@ -117,7 +114,6 @@ const TeacherActivities = ({ cls, onBack }) => {
       const newActivity = await response.json();
       console.log("[TeacherActivities] Activity created:", newActivity);
 
-      // Save passages and questions
       for (const passage of passages) {
         const passageRes = await apiFetch("/passages", {
           method: "POST",
@@ -180,7 +176,6 @@ const TeacherActivities = ({ cls, onBack }) => {
     setShowAddPassage(false);
     setPassages([]);
   };
-  
 
   const handleLogout = async () => {
     try {
@@ -194,13 +189,12 @@ const TeacherActivities = ({ cls, onBack }) => {
     <div className="teacher-activities-container">
       {/* Sidebar */}
       <aside className="student-sidebar">
-        <img src={'/assets/logo2.png'} alt="ReadiKo Logo" className="sidebar-logo" />
+        <img src="/assets/logo2.png" alt="ReadiKo Logo" className="sidebar-logo" />
 
         <nav className="sidebar-nav">
           <select className="sidebar-select" defaultValue="classes">
             <option value="classes">Classes</option>
           </select>
-
           <button className="sidebar-link">Profile</button>
         </nav>
 
@@ -239,28 +233,38 @@ const TeacherActivities = ({ cls, onBack }) => {
         </div>
 
         <div className="activities-container">
-          {loadingActivities ? (
-            <p>Loading activities...</p>
-          ) : activities.length === 0 ? (
-            <p style={{ color: "#888" }}>No activities yet. Create one!</p>
-          ) : (
-            activities.map((a) => (
-              <div key={a.a_id} className="activity-card">
-                <div className="activity-top">
-                  <h3>{a.topic}</h3>
-                  <p className="activity-status">
-                    Status: <span>{getActivityStatus(a.close_date)}</span>
-                  </p>
-                  <p className="activity-due">Due {formatDate(a.close_date)}</p>
-                </div>
+          {activeTab === "activities" ? (
+            <>
+              {loadingActivities ? (
+                <p>Loading activities...</p>
+              ) : activities.length === 0 ? (
+                <p style={{ color: "#888" }}>No activities yet. Create one!</p>
+              ) : (
+                activities.map((a) => (
+                  <div key={a.a_id} className="activity-card">
+                    <div className="activity-top">
+                      <h3>{a.topic}</h3>
+                      <p className="activity-status">
+                        Status: <span>{getActivityStatus(a.close_date)}</span>
+                      </p>
+                      <p className="activity-due">Due {formatDate(a.close_date)}</p>
+                    </div>
 
-                <div className="activity-bottom">
-                  <div className="activity-meta">
-                    <p>Open {formatDate(a.open_date)}</p>
-                    <p>Type: {a.type_of_activity || "—"}</p>
+                    <div className="activity-bottom">
+                      <div className="activity-meta">
+                        <p>Open {formatDate(a.open_date)}</p>
+                        <p>Type: {a.type_of_activity || "—"}</p>
+                      </div>
+                      <button className="review-btn">View</button>
+                    </div>
                   </div>
-                  <button className="review-btn">View</button>
-                </div>
+                ))
+              )}
+
+              <div className="create-btn-wrapper">
+                <button className="create-btn" onClick={() => setShowCreate(true)}>
+                  + Create Activity
+                </button>
               </div>
             </>
           ) : (

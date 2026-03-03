@@ -103,7 +103,7 @@ function App() {
             path="/home" 
               element={
               user && userRole === 'student' 
-                ? <TeacherActivities user={user} /> 
+                ? <StudentHomepage user={user} /> 
                 : <Navigate to="/login" />
               } 
           />

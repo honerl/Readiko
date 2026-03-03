@@ -102,6 +102,54 @@ const PassageBlock = ({ title, content, difficulty }) => (
   </div>
 );
 
+const TaptapLoadingScreen = ({ message = "Loading…" }) => (
+  <div style={{
+    display: "flex", flexDirection: "column", alignItems: "center",
+    justifyContent: "center", height: "100vh", background: "#FFFDF5", gap: 12,
+  }}>
+    <style>{`
+      @keyframes float {
+        0%   { transform: translate(0px, 0px) rotate(0deg); }
+        25%  { transform: translate(18px, -22px) rotate(6deg); }
+        50%  { transform: translate(-14px, -10px) rotate(-4deg); }
+        75%  { transform: translate(10px, 16px) rotate(5deg); }
+        100% { transform: translate(0px, 0px) rotate(0deg); }
+      }
+      @keyframes dotPulse {
+        0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+        40%           { opacity: 1;   transform: scale(1.2); }
+      }
+    `}</style>
+
+    <img
+      src="/assets/taptap.png"
+      alt="Taptap"
+      style={{
+        width: 110, height: 110,
+        animation: "float 3s ease-in-out infinite",
+        filter: "drop-shadow(0 6px 16px rgba(238,106,96,0.25))",
+      }}
+    />
+
+    <p style={{
+      margin: 0, fontSize: 17, fontWeight: 700,
+      color: "#6C530E", letterSpacing: 0.3,
+    }}>
+      {message}
+    </p>
+
+    <div style={{ display: "flex", gap: 6, marginTop: 2 }}>
+      {[0, 1, 2].map(i => (
+        <span key={i} style={{
+          width: 8, height: 8, borderRadius: "50%",
+          background: "#EE6A60", display: "inline-block",
+          animation: `dotPulse 1.4s ease-in-out ${i * 0.2}s infinite`,
+        }} />
+      ))}
+    </div>
+  </div>
+);
+
 const SummaryScreen = ({ summary, onClose }) => (
   <div style={{
     display: "flex", flexDirection: "column", alignItems: "center",
@@ -137,46 +185,53 @@ const LessonMode = () => {
   const [hasAnswered, setHasAnswered] = useState(false);
 
   useEffect(() => {
-    const fetchUserId = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUserId(user.id);
-      }
-    };
-    fetchUserId();
-  }, []);
+  const fetchUserId = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) setUserId(user.id);
+  };
+  fetchUserId();
+}, []);
 
   useEffect(() => {
-  if (!userId) return; // wait until Supabase gives us the user ID
+  if (!userId) return;
+
+  // Reset all session state for the new topic
+  setSessionId(null);
+  setPassage(null);
+  setMessages([]);
+  setTurnInfo({ current: 0, max: 6 });
+  setSummary(null);
+  setSessionDone(false);
+  setHasAnswered(false);
+  setError(null);
 
   const startSession = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`${API_BASE}/chat/explore/start`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: userId,
-            topic: topic ?? "Self-Paced Learning",
-          }),
-        });
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
-        const data = await res.json();
-        setSessionId(data.session_id);
-        setPassage({ title: data.passage_title, content: data.passage_content, difficulty: data.difficulty });
-        setTurnInfo({ current: data.current_turn, max: data.max_turns });
-        setMessages([{ role: "ai", text: data.ai_message }]);
-      } catch (err) {
-        setError("Failed to load the session. Please try again.");
-        console.error("[LessonMode] start:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/chat/explore/start`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: userId,
+          topic: topic ?? "Self-Paced Learning",
+        }),
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const data = await res.json();
+      setSessionId(data.session_id);
+      setPassage({ title: data.passage_title, content: data.passage_content, difficulty: data.difficulty });
+      setTurnInfo({ current: data.current_turn, max: data.max_turns });
+      setMessages([{ role: "ai", text: data.ai_message }]);
+    } catch (err) {
+      setError("Failed to load the session. Please try again.");
+      console.error("[ExploreMode] start:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    startSession();
-  }, [userId]); // ← depends on userId, not []
+  startSession();
+}, [userId, topic]); // ← topic added here so it re-runs on every new topic
 
   const handleSend = async () => {
     if (!input.trim() || isLoading || !sessionId) return;
@@ -219,17 +274,10 @@ const LessonMode = () => {
     </div>
   );
 
-  if (!passage && isLoading) return (
-    <div className="test-page" style={{ padding: 40, textAlign: "center", color: "#8d7b5f" }}>
-      Loading your passage…
-    </div>
-  );
+  if (!passage && isLoading) return <TaptapLoadingScreen message="Fetching your passage…" />;
 
-  if (!userId) return (
-    <div className="test-page" style={{ padding: 40, textAlign: "center", color: "#8d7b5f" }}>
-      Loading user…
-    </div>
-  );
+  if (!userId) return <TaptapLoadingScreen message="Getting things ready…" />;
+
 
   return (
     <div className="test-page explore-page">

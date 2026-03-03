@@ -10,52 +10,52 @@ const Dashboard = ({
   onJoinClass
 }) => {
   const styles = {
-    title: { 
-      fontSize: '52px', 
-      color: '#6C530E', 
-      marginBottom: '30px', 
+    title: {
+      fontSize: '52px',
+      color: '#6C530E',
+      marginBottom: '30px',
       marginTop: '0px',
-      fontWeight: 'bold' 
+      fontWeight: 'bold'
     },
-    tabContainer: { 
-      display: 'flex', 
-      gap: '160px', 
+    tabContainer: {
+      display: 'flex',
+      gap: '160px',
       marginBottom: '20px',
       alignItems: 'center',
       textAlign: 'center',
       justifyContent: 'center',
       width: '100%'
     },
-    activeTab: { 
-      background: 'none', 
-      border: 'none', 
+    activeTab: {
+      background: 'none',
+      border: 'none',
       borderRadius: '0px',
-      fontSize: '16px', 
-      fontWeight: 'bold', 
-      color: '#EE6A60', 
-      cursor: 'pointer', 
+      fontSize: '16px',
+      fontWeight: 'bold',
+      color: '#EE6A60',
+      cursor: 'pointer',
       paddingBottom: '8px',
       outline: 'none',
       boxShadow: 'none',
       borderBottom: '3px solid #EE6A60'
     },
-    inactiveTab: { 
-      background: 'none', 
+    inactiveTab: {
+      background: 'none',
       borderRadius: '0px',
-      border: 'none', 
-      fontSize: '16px', 
-      color: '#4a3b20', 
-      cursor: 'pointer', 
+      border: 'none',
+      fontSize: '16px',
+      color: '#4a3b20',
+      cursor: 'pointer',
       paddingBottom: '8px',
       outline: 'none',
       boxShadow: 'none'
     },
-    contentLayout: { 
-      display: 'flex', 
-      gap: '80px', 
-      width: '100%', 
+    contentLayout: {
+      display: 'flex',
+      gap: '80px',
+      width: '100%',
       height: '100%',
-      alignItems: 'flex-start' 
+      alignItems: 'flex-start'
     },
     leftColumn: {
       flex: 1,
@@ -69,17 +69,17 @@ const Dashboard = ({
       overflow: 'hidden'
     },
 
-    classScrollArea: { 
+    classScrollArea: {
       flex: 1,
-      backgroundColor: '#FFFDF5', 
+      backgroundColor: '#FFFDF5',
       borderRadius: '20px',
       marginBottom: '10px',
-      padding: '35px 30px', 
-      display: 'flex', 
+      padding: '35px 30px',
+      display: 'flex',
       width: 'calc(100% - 80px)',
       height: '100%',
-      flexDirection: 'column', 
-      gap: '40px', 
+      flexDirection: 'column',
+      gap: '40px',
       overflowY: 'auto',
       overflowX: 'hidden',
       scrollbarWidth: 'none',
@@ -87,10 +87,10 @@ const Dashboard = ({
       border: '1px solid #BAAAAA',
       boxShadow: '0 4px 4px #BAAAAA',
     },
-    classCard: { 
-      backgroundColor: '#fcf0c8', 
-      padding: '25px', 
-      borderRadius: '20px', 
+    classCard: {
+      backgroundColor: '#fcf0c8',
+      padding: '25px',
+      borderRadius: '20px',
       border: '1px solid #e0d090',
       cursor: 'pointer'
     },
@@ -103,26 +103,26 @@ const Dashboard = ({
       textAlign: 'left',
       marginTop: '0px'
     },
-    desc: { 
-      fontSize: '16px', 
-      color: '#7a6b4a', 
+    desc: {
+      fontSize: '16px',
+      color: '#7a6b4a',
       lineHeight: '1.4',
-      marginBottom: '15px' 
+      marginBottom: '15px'
     },
-    teacherName: { 
-      textAlign: 'right', 
-      fontWeight: 'bold', 
-      color: '#6C530E', 
+    teacherName: {
+      textAlign: 'right',
+      fontWeight: 'bold',
+      color: '#6C530E',
       fontSize: '14px',
       fontStyle: 'italic'
     },
-    joinBtn: { 
+    joinBtn: {
       border: '2px dashed #8d7b5f',
-      padding: '60px', 
-      borderRadius: '20px', 
-      backgroundColor: '#EEE7D7', 
-      cursor: 'pointer', 
-      fontSize: '18px', 
+      padding: '60px',
+      borderRadius: '20px',
+      backgroundColor: '#EEE7D7',
+      cursor: 'pointer',
+      fontSize: '18px',
       color: '#8d7b5f',
       transition: '0.2s',
       outline: 'none',
@@ -135,22 +135,43 @@ const Dashboard = ({
     },
     exploreGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-      gap: '40px',
-      alignItems: 'start'
+      gridTemplateColumns: '1fr',
+      gap: '28px',
+      alignItems: 'start',
+      width: '100%'
     },
     exploreCard: {
       backgroundColor: '#FFEFC4',
-      padding: '16px 32px 18px 32px',
+      padding: '22px 32px',
       borderRadius: '18px',
       border: '1px solid #C79898',
       boxShadow: '0 4px 4px #C79898',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'space-between'
+      justifyContent: 'flex-start',
+      gap: '16px',
+      width: '100%',
+      maxWidth: '760px',
+      height: '170px',
+      boxSizing: 'border-box'
+    },
+    exploreTitleWrap: {
+      flex: '0 1 auto',
+      maxHeight: '92px',
+      overflowY: 'auto',
+      paddingRight: '4px'
+    },
+    exploreTitle: {
+      fontSize: '28px',
+      color: '#4a3b20',
+      margin: 0,
+      fontWeight: 'normal',
+      textAlign: 'left',
+      lineHeight: '1.2',
+      overflowWrap: 'anywhere'
     },
     exploreBtn: {
-      marginTop: '14px',
+      marginTop: 'auto',
       alignSelf: 'flex-start',
       backgroundColor: '#EE6A60',
       color: '#fff',
@@ -186,12 +207,28 @@ const Dashboard = ({
 
   const navigate = useNavigate();
 
-  const exploreItems = [
-    {
-      id: 'exp-1',
-      title: 'Self-Paced Learning'
-    }
+  const exploreTitles = [
+    "The Day the Internet Disappeared in a Small Town",
+    "Why Do We Procrastinate Even When We Know Better?",
+    "A Letter to My Future Self at Age Thirty",
+    "The Science Behind Why We Dream",
+    "Should School Start Later in the Morning?",
+    "The Hidden Life of Urban Street Trees",
+    "From Failure to Breakthrough: A Student’s Experiment Gone Wrong",
+    "How Social Media Changes the Way We Communicate",
+    "The Mystery of the Missing Library Book",
+    "What Makes a Friendship Last for Years?",
+    "Can Artificial Intelligence Replace Teachers?",
+    "A Day Without Electricity: Lessons from a Power Outage",
+    "Why Humans Are Afraid of Public Speaking",
+    "The Journey of a Plastic Bottle from Store to Ocean",
+    "Is Competition Always Good for Personal Growth?"
   ];
+
+  const exploreItems = exploreTitles.map((title, index) => ({
+    id: `exp-${index + 1}`,
+    title
+  }));
 
   console.log('[Dashboard] received classes prop:', classes);
 
@@ -247,7 +284,7 @@ const Dashboard = ({
             Explore
           </button>
         </div>
-        
+
         <div style={styles.classScrollArea} className="hide-scrollbar">
           {activeTab === 'classes' ? (
             <>
@@ -268,7 +305,7 @@ const Dashboard = ({
                     </div>
                   ))}
                   <button className="join-btn" onClick={onJoinClass} style={styles.joinBtn}>
-                    + Join Class  
+                    + Join Class
                   </button>
                 </>
               )}
@@ -277,13 +314,13 @@ const Dashboard = ({
             <div style={styles.exploreGrid}>
               {exploreItems.map((item) => (
                 <div key={item.id} style={styles.exploreCard}>
-                  <div>
-                    <h3 style={styles.classTitle}>{item.title}</h3>
+                  <div style={styles.exploreTitleWrap}>
+                    <h3 style={styles.exploreTitle}>{item.title}</h3>
                   </div>
                   <button
                     className="explore-start-btn"
                     style={styles.exploreBtn}
-                    onClick={() => { if (item.id === "exp-1") { navigate(`/explore/${encodeURIComponent(item.title)}`); } }}
+                    onClick={() => navigate(`/explore/${encodeURIComponent(item.title)}`)}
                   >
                     Start
                   </button>

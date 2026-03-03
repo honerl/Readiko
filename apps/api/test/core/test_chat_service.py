@@ -102,14 +102,32 @@ def test_submit_answer_completes_and_persists(monkeypatch: MonkeyPatch):
         lambda payload: persisted_payloads.append(payload),  # type: ignore[arg-type]
     )
 
-    service = ChatService(client=FakeClient(scores=[90]))
+    service = ChatService(client=FakeClient(scores=[90, 90, 90, 90]))
     start = service.start_explore_session(user_id="u1", topic="science")
+    first = service.submit_explore_answer(
+        session_id=start.session_id,
+        user_id="u1",
+        answer="Strong answer",
+    )
+    second = service.submit_explore_answer(
+        session_id=start.session_id,
+        user_id="u1",
+        answer="Strong answer",
+    )
+    third = service.submit_explore_answer(
+        session_id=start.session_id,
+        user_id="u1",
+        answer="Strong answer",
+    )
     result = service.submit_explore_answer(
         session_id=start.session_id,
         user_id="u1",
         answer="Strong answer",
     )
 
+    assert first.should_continue is True
+    assert second.should_continue is True
+    assert third.should_continue is True
     assert result.should_continue is False
     assert result.summary is not None
     assert result.summary.skill_level in {

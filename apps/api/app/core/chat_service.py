@@ -49,6 +49,7 @@ class ExploreSessionState:
 
 
 class ChatService:
+    MIN_TURNS_BEFORE_COMPLETION = 4
     PROCESS_ORDER = ["access_retrieve", "integrate_interpret", "reflect_evaluate"]
     SUBSKILLS_BY_PROCESS: dict[str, list[str]] = {
         "access_retrieve": ["key_detail", "locate_sentence", "vocab_in_context"],
@@ -210,7 +211,8 @@ class ChatService:
         mastered = average_score >= state.mastery_threshold and consistent_recent
         exhausted = state.current_turn >= state.max_turns
 
-        if mastered or exhausted:
+        can_complete_by_mastery = state.current_turn >= self.MIN_TURNS_BEFORE_COMPLETION
+        if (mastered and can_complete_by_mastery) or exhausted:
             state.status = SessionStatus.completed
             summary = self._build_summary(
                 average_score=average_score,
@@ -580,7 +582,7 @@ class ChatService:
             passage_words = len(passage.split())
             if not passage or not question:
                 raise ValueError("Missing passage/question fields")
-            if passage_words < 120 or passage_words > 180:
+            if passage_words < 80 or passage_words > 220:
                 raise ValueError("Passage length is out of bounds")
 
             question = self._sanitize_follow_up_question(

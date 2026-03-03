@@ -87,7 +87,7 @@
   width: 360px;
   height: 52px;
   cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.08s ease;
+  transition: opacity 0.2s ease;
   display: flex;
   justify-content: center; 
   align-items: center;
@@ -107,10 +107,6 @@
 .btn_primary:active {
   outline: none;
   box-shadow: none;
-}
-
-.btn_primary:active {
-  transform: scale(0.97);
 }
 
 .btn_secondary {

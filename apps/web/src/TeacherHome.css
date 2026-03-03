@@ -402,7 +402,7 @@
 }
 
 .th-createBtn:hover {
-  opacity: 0.9;
+    opacity: 0.9;
 }
 
 .th-createBtn:focus,
@@ -414,4 +414,45 @@
 
 .th-createBtn:active {
   transform: scale(0.97);
+}
+
+.th-createBtn:focus,
+.th-createBtn:focus-visible,
+.th-createBtn:active {
+  outline: none;
+  box-shadow: 0 2px 4px #BAAAAA;
+}
+
+.th-createBtn:active {
+  transform: scale(0.97);
+}
+
+.th-copyBtn {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.th-copyBtn:hover {
+  background-color: #0056b3;
+}
+
+.th-copyBtn {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.th-copyBtn:hover {
+  background-color: #0056b3;
 }

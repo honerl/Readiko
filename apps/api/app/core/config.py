@@ -14,8 +14,14 @@ class Settings(BaseSettings):
     # `supabase_url`.
     supabase_jwks_url: str | None = None
 
-    # OPEN API KEY
+    # Gemini
     gemini_api_key: str = ""
+    # OpenAI
+    openai_api_key: str = ""
+    # LLM
+    llm_provider: str = "openai"
+    llm_model: str = "gpt-5o-mini"
+
     RATE_LIMIT_PER_MINUTE: int = 5
 
     model_config = SettingsConfigDict(
@@ -31,4 +37,6 @@ class Settings(BaseSettings):
 settings = Settings()
 # when jwks_url is not set, compute default
 if not settings.supabase_jwks_url and settings.supabase_url:
-    settings.supabase_jwks_url = settings.supabase_url.rstrip("/") + "/auth/v1/.well-known/jwks.json"
+    settings.supabase_jwks_url = (
+        settings.supabase_url.rstrip("/") + "/auth/v1/.well-known/jwks.json"
+    )

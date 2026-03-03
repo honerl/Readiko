@@ -5,10 +5,22 @@
 /* Wraps every question-taking screen */
 .test-page {
   min-height: 100vh;
-  background-color: #f5ead6;
+  background-image: url('/assets/background2.jpeg');
+  padding: 20px 48px 60px 48px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.explore-page {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
 }
 
 /* ============================================================
@@ -36,15 +48,38 @@
   font-size: 18px;
   color: #2a1f0e;
   flex-shrink: 0;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s;
+  padding: 0;
+  outline: none;
 }
 
-.back-btn:hover { background: rgba(0,0,0,0.06); }
+.back-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  transition: filter 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #fdf3e8;
+  border-color: #f06d5f;
+}
+
+.back-btn:hover img {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(82%) saturate(1489%) hue-rotate(330deg) brightness(98%) contrast(90%);
+}
+
+.back-btn:focus,
+.back-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
 
 /* Progress bar (lesson mode) */
 .progress-container {
+  margin: 0 120px 0 104px;
   flex: 1;
-  height: 12px;
+  height: 18px;
   background: #e8d9be;
   border-radius: 8px;
   overflow: hidden;
@@ -64,68 +99,112 @@
   font-size: 17px;
   font-weight: 600;
   color: #2a1f0e;
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 /* ── Main card ── */
 .explore-card {
   margin: 0 32px;
-  background: #fff;
+  background: #FEFBEF;
   border-radius: 20px;
   display: flex;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  border: 1px solid #6C530E;
+  box-shadow: 0 2px 4px #6C530E;
   flex: 1;
   min-height: 0;
 }
 
 /* ── Passage half ── */
 .passage-panel {
-  flex: 1;
+  flex: 2.5;
   padding: 32px 28px;
+  min-height: 0;
+  max-height: none;
   border-right: 1px solid #f0e6d3;
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
 }
 
+.passage-content {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.passage-content::-webkit-scrollbar {
+  display: none;
+}
+
+.passage-content {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .difficulty-badge {
-  display: inline-block;
-  background-color: #6bbf7a;
+  display: block;
+  background-color: #7CC588;
   color: #fff;
-  font-size: 13px;
   font-weight: 700;
-  padding: 4px 18px;
-  border-radius: 20px;
-  margin-bottom: 18px;
+  border-radius: 12px;
+  margin-left: auto;
   font-family: "Segoe UI", sans-serif;
+  width: 80px;
+  text-align: center;
+  font-size: 12px;
+  padding: 6px 8px;
 }
 
 .difficulty-badge.medium { background-color: #f0a050; }
 .difficulty-badge.hard   { background-color: #e05c50; }
 
 .passage-panel h2 {
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: #1a1209;
+  margin-top: 8px;
   margin-bottom: 16px;
 }
 
 .passage-panel p {
-  font-family: "Georgia", serif;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.75;
   color: #3a2e1e;
 }
 
 /* ── Chat / question half ── */
 .chat-panel {
-  flex: 1;
+  flex: 2;
+  min-height: 0;
+  max-height: none;
   display: flex;
   flex-direction: column;
   padding: 24px 20px 16px;
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  gap: 10px;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  padding-right: 4px;
+}
+
+.chat-messages::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-messages {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* AI message row */
@@ -162,10 +241,10 @@
   border: 1.5px solid #e8d9be;
   border-radius: 0 14px 14px 14px;
   padding: 10px 14px;
-  font-size: 14px;
+  font-size: 16px;
   color: #2a1f0e;
   max-width: 85%;
-  line-height: 1.5;
+  line-height: 1.75;
 }
 
 .chat-label {
@@ -184,9 +263,12 @@
   padding: 10px 14px;
   font-size: 14px;
   color: #2a1f0e;
-  max-width: 85%;
+  max-width: 75%;
   align-self: flex-end;
   line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* Input row at bottom of chat */
@@ -194,8 +276,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: auto;
-  padding-top: 8px;
+  margin-top: 0;
+  padding: 16px 4px 4px 4px;
   border-top: 1px solid #f0e6d3;
 }
 
@@ -208,8 +290,15 @@
   outline: none;
   background: #fff;
   color: #2a1f0e;
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   transition: border-color 0.15s;
+  margin: 0;
+  resize: none;
+  overflow-y: hidden;
+  min-height: 40px;
+  max-height: 120px;
+  line-height: 1.4;
+  box-sizing: border-box;
 }
 
 .chat-input:focus { border-color: #f06d5f; }
@@ -219,7 +308,7 @@
   height: 36px;
   border-radius: 50%;
   background: #f06d5f;
-  border: none;
+  border: 1px solid #2A0000;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -228,62 +317,104 @@
   font-size: 15px;
   transition: background 0.15s;
   flex-shrink: 0;
+  margin-top: 0;
 }
 
-.chat-send-btn:hover { background: #e05c4e; }
+.chat-send-btn:hover {
+    background: #e05c4e;    
+    border-color: #e05c4e; 
+}
 
 /* ── Bottom action bar ── */
 .explore-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  gap: calc(100%/2);
+  padding: 20px 32px;
+  margin-top: 8px;
+}
+
+.lesson-actions {
+  display: flex;
+  justify-content: center;
   align-items: center;
   padding: 20px 32px;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .action-btn-skip {
   padding: 12px 40px;
   border-radius: 50px;
   border: 2px solid #2a1f0e;
-  background: transparent;
+  background: #FEF0D5;
   font-size: 15px;
   font-weight: 600;
   color: #2a1f0e;
   cursor: pointer;
-  font-family: "Georgia", serif;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  outline: none;
 }
 
-.action-btn-skip:hover { background: rgba(0,0,0,0.05); }
+.action-btn-skip:hover {
+  background: #fdf3e8;
+  border-color: #f06d5f;
+  color: #f06d5f;
+}
+
+.action-btn-skip:focus,
+.action-btn-skip:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
 
 .action-btn-next {
   padding: 12px 44px;
   border-radius: 50px;
-  border: none;
+  border: 1px solid #2A0000;
   background: #f06d5f;
   font-size: 15px;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   transition: background 0.15s, transform 0.1s;
   box-shadow: 0 3px 10px rgba(240,109,95,0.35);
 }
 
-.action-btn-next:hover  { background: #e05c4e; }
+.action-btn-next:hover  { background: #e05c4e;  border-color: #e05c4e; }
 .action-btn-next:active { transform: scale(0.97); }
+.action-btn-next:disabled {
+  background: #d8c9b0;
+  border-color: #d8c9b0;
+  color: #fff;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
 
 /* ============================================================
    EXAM MODE  (image 3)
    ============================================================ */
 
+.exam-page {
+  --exam-side-padding: 28px;
+  --exam-sidebar-width: 180px;
+  --exam-layout-gap: 20px;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
 /* ── Outer row: left column + right sidebar ── */
 .exam-layout {
   display: flex;
   flex: 1;
-  padding: 20px 28px 0;
-  gap: 20px;
-  align-items: flex-start;
+  min-height: 0;
+  padding: 20px var(--exam-side-padding);
+  gap: var(--exam-layout-gap);
+  align-items: stretch;
+  overflow: hidden;
 }
 
 /* ── Left column: topbar + card stacked ── */
@@ -292,6 +423,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-height: 0;
   min-width: 0;
 }
 
@@ -300,29 +432,30 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  flex-shrink: 0;
 }
 
 /* ── Item header pill (fills remaining width next to back btn) ── */
 .exam-item-header {
   flex: 1;
-  background: #fff;
-  border-radius: 12px;
+  background:transparent;
+  border: 1px solid #6C530E;
+  border-radius: 20px;
   padding: 12px 24px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  gap: 1px;
 }
 
 .exam-item-title {
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: normal;
   color: #1a1209;
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .exam-item-points {
-  font-size: 13px;
+  font-size: 12px;
   color: #7a6040;
   font-family: "Segoe UI", sans-serif;
 }
@@ -330,34 +463,54 @@
 /* ── Main content card (passage + questions) ── */
 .exam-content-card {
   flex: 1;
-  background: #fff;
+  background: #FEFBEF;
   border-radius: 16px;
   display: flex;
   gap: 0;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-  min-height: 420px;
+  border: 1px solid #6C530E;
+  box-shadow: 0 4px 4px #6C530E;
+  min-height: 0;
 }
 
 /* Passage column inside exam card */
 .exam-passage-col {
   flex: 1;
+  min-height: 0;
+  max-height: none;
   padding: 28px 24px;
   border-right: 1px solid #f0e6d3;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
-.exam-passage-col h2 {
-  font-family: "Georgia", serif;
+.exam-passage-content {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.exam-passage-content::-webkit-scrollbar {
+  display: none;
+}
+
+.exam-passage-content {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.exam-passage-content h2 {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 19px;
   font-weight: 700;
   color: #1a1209;
   margin-bottom: 16px;
 }
 
-.exam-passage-col p {
-  font-family: "Georgia", serif;
-  font-size: 14.5px;
+.exam-passage-content p {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
   line-height: 1.8;
   color: #3a2e1e;
   margin-bottom: 12px;
@@ -366,20 +519,39 @@
 /* Questions column inside exam card */
 .exam-questions-col {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
+  max-height: none;
   padding: 28px 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
   overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.exam-questions-col::-webkit-scrollbar {
+  display: none;
+}
+
+.exam-questions-col {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.exam-question-block {
+  min-width: 0;
 }
 
 .exam-question-block h3 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: #2a1f0e;
   margin-bottom: 10px;
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .exam-answer-input {
@@ -389,12 +561,21 @@
   border: 1.5px solid #ddd;
   padding: 10px 12px;
   font-size: 14px;
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   resize: none;
   outline: none;
   color: #2a1f0e;
   background: #fff;
   transition: border-color 0.15s;
+  box-sizing: border-box;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.exam-answer-input::-webkit-scrollbar {
+  display: none;
 }
 
 .exam-answer-input::placeholder { color: #aaa; }
@@ -402,18 +583,21 @@
 
 /* ── Right sidebar (navigation + timer) ── */
 .exam-sidebar {
-  width: 120px;
+  width: var(--exam-sidebar-width);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  min-height: 0;
 }
 
 .exam-sidebar-card {
-  background: #fff;
+  background: #FEFBEF;
   border-radius: 14px;
   padding: 16px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border: 1px solid #6C530E;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .exam-sidebar-card h4 {
@@ -421,6 +605,7 @@
   font-weight: 700;
   color: #2a1f0e;
   margin-bottom: 12px;
+  margin-top: 0px;
   font-family: "Segoe UI", sans-serif;
 }
 
@@ -429,6 +614,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.exam-timer-block {
+  margin-top: auto;
 }
 
 .nav-num-btn {
@@ -473,9 +662,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
-  padding: 20px 28px;
+  gap: calc(100%/8);
+  width: calc(100% - (var(--exam-side-padding) * 2) - var(--exam-sidebar-width) - var(--exam-layout-gap));
+  margin-left: var(--exam-side-padding);
+  padding: 20px 0;
   margin-top: auto;
+  flex-shrink: 0;
 }
 
 .exam-page-btn {
@@ -487,7 +679,7 @@
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  font-family: "Georgia", serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   transition: background 0.15s, transform 0.1s;
   box-shadow: 0 3px 10px rgba(240,109,95,0.3);
 }
@@ -498,6 +690,18 @@
   background: #d8c9b0;
   box-shadow: none;
   cursor: not-allowed;
+}
+
+.chat-send-btn:focus,
+.chat-send-btn:focus-visible,
+.action-btn-next:focus,
+.action-btn-next:focus-visible,
+.nav-num-btn:focus,
+.nav-num-btn:focus-visible,
+.exam-page-btn:focus,
+.exam-page-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .exam-page-indicator {

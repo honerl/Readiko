@@ -41,9 +41,10 @@ const Dashboard = ({
     },
     inactiveTab: { 
       background: 'none', 
+      borderRadius: '0px',
       border: 'none', 
       fontSize: '16px', 
-      color: '#d4c4a8', 
+      color: '#4a3b20', 
       cursor: 'pointer', 
       paddingBottom: '8px',
       outline: 'none',
@@ -154,7 +155,7 @@ const Dashboard = ({
       backgroundColor: '#EE6A60',
       color: '#fff',
       border: '1px solid #6C530E',
-      boxShadow: '0 2px 4px #6C530E',
+      boxShadow: '0 2px 4px #C79898',
       padding: '8px 48px',
       borderRadius: '10px',
       fontWeight: 'normal',
@@ -196,17 +197,50 @@ const Dashboard = ({
 
   return (
     <section style={styles.contentLayout}>
+      <style>{`
+        .tab-btn:hover {
+          color: #EE6A60 !important;
+          border-bottom: 3px solid rgba(238, 106, 96, 0.3) !important;
+        }
+        .join-btn:hover {
+          background-color: #E0D9CB !important;
+        }
+        .explore-start-btn {
+          transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+        }
+        .explore-start-btn:hover {
+          background-color: #e05c4e !important;
+        }
+        .explore-start-btn:active {
+          transform: scale(0.97);
+        }
+        .explore-start-btn:focus,
+        .explore-start-btn:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(238, 106, 96, 0.35);
+        }
+        @media (max-width: 768px) {
+          .explore-start-btn {
+            width: 100%;
+            align-self: stretch !important;
+            text-align: center;
+            padding: 10px 16px !important;
+          }
+        }
+      `}</style>
       <div style={styles.leftColumn}>
         <h2 style={styles.title}>Let's learn</h2>
 
         <div style={styles.tabContainer}>
-          <button 
+          <button
+            className="tab-btn"
             style={activeTab === 'classes' ? styles.activeTab : styles.inactiveTab}
             onClick={() => setActiveTab('classes')}
           >
             Classes
           </button>
-          <button 
+          <button
+            className="tab-btn"
             style={activeTab === 'explore' ? styles.activeTab : styles.inactiveTab}
             onClick={() => setActiveTab('explore')}
           >
@@ -233,7 +267,7 @@ const Dashboard = ({
                       <p style={styles.teacherName}>{cls.teacher_name || 'Ms. English Teacher'}</p>
                     </div>
                   ))}
-                  <button onClick={onJoinClass} style={styles.joinBtn}>
+                  <button className="join-btn" onClick={onJoinClass} style={styles.joinBtn}>
                     + Join Class  
                   </button>
                 </>
@@ -247,12 +281,9 @@ const Dashboard = ({
                     <h3 style={styles.classTitle}>{item.title}</h3>
                   </div>
                   <button
+                    className="explore-start-btn"
                     style={styles.exploreBtn}
-                    onClick={() => {
-                    if (item.id === "exp-1") {
-                        navigate("/explore");
-                    }
-                    }}
+                    onClick={() => { if (item.id === "exp-1") { navigate(`/explore/${encodeURIComponent(item.title)}`); } }}
                   >
                     Start
                   </button>

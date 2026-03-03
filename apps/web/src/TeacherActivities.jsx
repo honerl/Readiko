@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import "./TeacherActivities.css";
 import { apiFetch } from "./services/api";
 import AddPassage from "./AddPassage";
+import { supabase } from "./services/supabaseClient";
 
 const TeacherActivities = ({ cls, onBack }) => {
   const [activities, setActivities] = useState([]);
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
-  const [showAddPassage, setShowAddPassage] = useState(false); // ← was missing
+  const [showAddPassage, setShowAddPassage] = useState(false);
   const [passages, setPassages] = useState([]);
+
+  const [activeTab, setActiveTab] = useState("activities");
+  const [students, setStudents] = useState([]);
+  const [loadingStudents, setLoadingStudents] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const [form, setForm] = useState({
     topic: "",
@@ -17,6 +23,13 @@ const TeacherActivities = ({ cls, onBack }) => {
     timeLimit: "While the activity is still open",
     testType: "",
   });
+
+  const getOrdinal = (n) => {
+    if (n === 1) return "st";
+    if (n === 2) return "nd";
+    if (n === 3) return "rd";
+    return "th";
+  };
 
   useEffect(() => {
     if (!cls?.c_id) return;
@@ -39,13 +52,44 @@ const TeacherActivities = ({ cls, onBack }) => {
     fetchActivities();
   }, [cls?.c_id]);
 
+  useEffect(() => {
+    if (!cls?.c_id || activeTab !== "records") return;
+
+    const fetchStudents = async () => {
+      try {
+        setLoadingStudents(true);
+        console.log("[TeacherActivities] Fetching students for class:", cls.c_id);
+
+        const res = await apiFetch(`/classes/${cls.c_id}/students`);
+        if (!res.ok) throw new Error("Failed to fetch students");
+
+        const data = await res.json();
+        console.log("[TeacherActivities] Students loaded:", data);
+
+        const sorted = [...data].sort((a, b) => b.average - a.average);
+        const ranked = sorted.map((student, index) => ({
+          ...student,
+          rank: index + 1,
+        }));
+
+        setStudents(ranked);
+      } catch (err) {
+        console.error("[TeacherActivities] Failed to load students:", err);
+      } finally {
+        setLoadingStudents(false);
+      }
+    };
+
+    fetchStudents();
+  }, [cls?.c_id, activeTab]);
+
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm((p) => ({ ...p, [name]: value }));
   };
 
   const handlePassageAdded = (passage) => {
-    setPassages((prev) => [...prev, passage]);
+    setPassages((prev) => [passage, ...prev]);
     setShowAddPassage(false);
   };
 
@@ -70,7 +114,6 @@ const TeacherActivities = ({ cls, onBack }) => {
       const newActivity = await response.json();
       console.log("[TeacherActivities] Activity created:", newActivity);
 
-      // Save passages and questions
       for (const passage of passages) {
         const passageRes = await apiFetch("/passages", {
           method: "POST",
@@ -123,25 +166,43 @@ const TeacherActivities = ({ cls, onBack }) => {
     });
   };
 
+  const getActivityStatus = (closeDate) => {
+    if (!closeDate) return "Open";
+    return new Date(closeDate) > new Date() ? "Open" : "Closed";
+  };
+
   const closeAll = () => {
     setShowCreate(false);
     setShowAddPassage(false);
     setPassages([]);
   };
 
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
+
   return (
     <div className="teacher-activities-container">
       {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="logo">Readiko</div>
-        <nav>
-          <ul>
-            <li>Learn</li>
-            <li>Achievements</li>
-            <li>Shop</li>
-            <li>Profile</li>
-          </ul>
+      <aside className="student-sidebar">
+        <img src="/assets/logo2.png" alt="ReadiKo Logo" className="sidebar-logo" />
+
+        <nav className="sidebar-nav">
+          <select className="sidebar-select" defaultValue="classes">
+            <option value="classes">Classes</option>
+          </select>
+          <button className="sidebar-link">Profile</button>
         </nav>
+
+        <div className="sidebar-footer">
+          <button className="sidebar-link logout-link" onClick={handleLogout}>
+            Log Out
+          </button>
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -157,36 +218,108 @@ const TeacherActivities = ({ cls, onBack }) => {
         </div>
 
         <div className="tabs">
-          <span className="active-tab">Activities</span>
-          <span>Class Record</span>
+          <span
+            className={activeTab === "activities" ? "active-tab" : ""}
+            onClick={() => setActiveTab("activities")}
+          >
+            Activities
+          </span>
+          <span
+            className={activeTab === "records" ? "active-tab" : ""}
+            onClick={() => setActiveTab("records")}
+          >
+            Class Record
+          </span>
         </div>
 
         <div className="activities-container">
-          {loadingActivities ? (
-            <p>Loading activities...</p>
-          ) : activities.length === 0 ? (
-            <p style={{ color: "#888" }}>No activities yet. Create one!</p>
-          ) : (
-            activities.map((a) => (
-              <div key={a.a_id} className="activity-card" style={{ marginBottom: "12px" }}>
-                <div className="activity-left">
-                  <h3>{a.topic}</h3>
-                  <p>Open {formatDate(a.open_date)}</p>
-                  <p>Due {formatDate(a.close_date)}</p>
-                </div>
-                <div className="activity-right">
-                  <span className="points">{a.type_of_activity || "—"}</span>
-                  <button className="review-btn">Review</button>
-                </div>
-              </div>
-            ))
-          )}
+          {activeTab === "activities" ? (
+            <>
+              {loadingActivities ? (
+                <p>Loading activities...</p>
+              ) : activities.length === 0 ? (
+                <p style={{ color: "#888" }}>No activities yet. Create one!</p>
+              ) : (
+                activities.map((a) => (
+                  <div key={a.a_id} className="activity-card">
+                    <div className="activity-top">
+                      <h3>{a.topic}</h3>
+                      <p className="activity-status">
+                        Status: <span>{getActivityStatus(a.close_date)}</span>
+                      </p>
+                      <p className="activity-due">Due {formatDate(a.close_date)}</p>
+                    </div>
 
-          <div className="create-btn-wrapper">
-            <button className="create-btn" onClick={() => setShowCreate(true)}>
-              + Create Activity
-            </button>
-          </div>
+                    <div className="activity-bottom">
+                      <div className="activity-meta">
+                        <p>Open {formatDate(a.open_date)}</p>
+                        <p>Type: {a.type_of_activity || "—"}</p>
+                      </div>
+                      <button className="review-btn">View</button>
+                    </div>
+                  </div>
+                ))
+              )}
+
+              <div className="create-btn-wrapper">
+                <button className="create-btn" onClick={() => setShowCreate(true)}>
+                  + Create Activity
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {loadingStudents ? (
+                <p>Loading students...</p>
+              ) : students.length === 0 ? (
+                <p style={{ color: "#888" }}>No students enrolled.</p>
+              ) : (
+                students.map((s) => (
+                  <div key={s.uid} className="record-card">
+                    <div className="record-left">
+                      <div className="avatar-circle" />
+                      <div>
+                        <strong>{s.lname}</strong>
+                        <div style={{ fontSize: "0.85rem", color: "#666" }}>
+                          {s.fname}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="record-middle">
+                      <div>{s.average?.toFixed(2) ?? "—"}</div>
+                      <div>{s.rank}{getOrdinal(s.rank)}</div>
+                    </div>
+
+                    <div className="record-right">
+                      <button
+                        className="menu-btn"
+                        onClick={() =>
+                          setOpenMenuId(openMenuId === s.u_id ? null : s.u_id)
+                        }
+                      >
+                        ⋮
+                      </button>
+
+                      {openMenuId === s.u_id && (
+                        <div className="dropdown-menu">
+                          <div onClick={() => alert("Open class profile")}>
+                            Class Profile
+                          </div>
+                          <div
+                            style={{ color: "red" }}
+                            onClick={() => handleRemoveStudent(s.u_id)}
+                          >
+                            Remove
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -201,7 +334,9 @@ const TeacherActivities = ({ cls, onBack }) => {
           ) : (
             <aside className="ta-drawer" onClick={(e) => e.stopPropagation()}>
               <div className="ta-drawerHeader">
-                <button className="ta-back" onClick={() => setShowCreate(false)}>←</button>
+                <button className="ta-back" onClick={() => setShowCreate(false)} aria-label="Back">
+                  <img src="/assets/backbtn.png" alt="Back" />
+                </button>
                 <div className="ta-drawerTitle">Create Activity</div>
               </div>
 
@@ -259,28 +394,30 @@ const TeacherActivities = ({ cls, onBack }) => {
 
                 <div className="ta-passages">
                   <div className="ta-passagesTitle">Passages</div>
-                  {passages.map((p, i) => (
-                    <div key={i} className="ta-passageItem">
-                      <span>{p.title}</span>
-                      <button
-                        type="button"
-                        className="ta-removeQ"
-                        onClick={() => setPassages((prev) => prev.filter((_, idx) => idx !== i))}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="ta-addPassage"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowAddPassage(true);
-                    }}
-                  >
-                    + Add Passage
-                  </button>
+                  <div className="ta-passagesList">
+                    {passages.map((p, i) => (
+                      <div key={i} className="ta-passageItem">
+                        <span>{p.title}</span>
+                        <button
+                          type="button"
+                          className="ta-removeQ"
+                          onClick={() => setPassages((prev) => prev.filter((_, idx) => idx !== i))}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="ta-addPassage"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowAddPassage(true);
+                      }}
+                    >
+                      + Add Passage
+                    </button>
+                  </div>
                 </div>
 
                 <div className="ta-actions">

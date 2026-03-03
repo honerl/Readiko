@@ -186,6 +186,7 @@ const Dashboard = ({
 
   const navigate = useNavigate();
 
+<<<<<<< HEAD
   const exploreItems = [
     {
       id: 'exp-1',

@@ -319,6 +319,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
   },
+
   typeBadge: {
     height: '18px',
     width: '60px',

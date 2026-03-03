@@ -13,6 +13,7 @@ import './Test.css'
 import TeacherHome from './TeacherHome';
 import { supabase } from './services/supabaseClient';
 import { checkHealth } from "./services/api.js";
+import TeacherActivities from './TeacherActivities.jsx';
 
 
 function App() {
@@ -106,9 +107,9 @@ function App() {
                 : <Navigate to="/login" />
               } 
           />
-          <Route path="/exre" element={<ExamMode />} />
+          <Route path="/exple" element={<ExamMode />} />
           <Route path="/explore" element={<LessonMode />} />
-          <Route path="/exre" element={<ExploreScreen />} />
+          <Route path="/exp" element={<ExploreScreen />} />
 
           {/* Teacher Home Route (Protected) */}
           <Route 

@@ -1,5 +1,5 @@
-# Readiko
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/honerl/Readiko)
+## READiKO
+
 
 Readiko is an AI-powered web application designed to enhance reading comprehension skills for students. The platform provides a dynamic learning environment with distinct interfaces for both students and teachers, leveraging generative AI to offer personalized feedback and adaptive learning paths.
 

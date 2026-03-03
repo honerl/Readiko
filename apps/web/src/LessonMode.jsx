@@ -12,10 +12,18 @@ const TaptapAvatar = ({ src }) =>
 // ── Chat Panel ─────────────────────────────────────────────
 const ChatPanel = ({ messages, input, onInput, onSend, avatarSrc }) => {
   const bottomRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = "auto";
+      inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 120) + "px";
+    }
+  }, [input]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -26,28 +34,32 @@ const ChatPanel = ({ messages, input, onInput, onSend, avatarSrc }) => {
 
   return (
     <div className="chat-panel">
-      {messages.map((msg, i) =>
-        msg.role === "ai" ? (
-          <div key={i}>
-            <div className="chat-label">Taptap</div>
-            <div className="chat-row-ai">
-              <TaptapAvatar src={avatarSrc} />
-              <div className="chat-bubble-ai">{msg.text}</div>
+      <div className="chat-messages">
+        {messages.map((msg, i) =>
+          msg.role === "ai" ? (
+            <div key={i}>
+              <div className="chat-label">Taptap</div>
+              <div className="chat-row-ai">
+                <TaptapAvatar src={avatarSrc} />
+                <div className="chat-bubble-ai">{msg.text}</div>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div key={i} className="chat-bubble-user">{msg.text}</div>
-        )
-      )}
-      <div ref={bottomRef} />
+          ) : (
+            <div key={i} className="chat-bubble-user">{msg.text}</div>
+          )
+        )}
+        <div ref={bottomRef} />
+      </div>
 
       <div className="chat-input-row">
-        <input
+        <textarea
+          ref={inputRef}
           className="chat-input"
           placeholder="Enter your thoughts..."
           value={input}
           onChange={(e) => onInput(e.target.value)}
           onKeyDown={handleKeyDown}
+          rows="1"
         />
         <button
           className="chat-send-btn"
@@ -75,15 +87,17 @@ const ProgressBar = ({ current, total }) => {
 // ── Passage Block ──────────────────────────────────────────
 const PassageBlock = ({ title, content, difficulty }) => (
   <div className="passage-panel">
-    {difficulty && (
-      <span className={`difficulty-badge ${difficulty.toLowerCase()}`}>
-        {difficulty}
-      </span>
-    )}
-    <h2>{title}</h2>
-    {Array.isArray(content)
-      ? content.map((para, i) => <p key={i}>{para}</p>)
-      : <p>{content}</p>}
+    <div className="passage-content">
+      {difficulty && (
+        <span className={`difficulty-badge ${difficulty.toLowerCase()}`}>
+          {difficulty}
+        </span>
+      )}
+      <h2>{title}</h2>
+      {Array.isArray(content)
+        ? content.map((para, i) => <p key={i}>{para}</p>)
+        : <p>{content}</p>}
+    </div>
   </div>
 );
 
@@ -98,6 +112,7 @@ const LessonMode = () => {
   const [messages, setMessages]               = useState([]);
   const [input, setInput]                     = useState("");
   const [isLoading, setIsLoading]             = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState({});
 
   // ── Load data ──
   useEffect(() => {
@@ -128,6 +143,8 @@ const LessonMode = () => {
 
   const passage  = test.passages[currentPassage];
   const question = passage.questions[currentQuestion];
+  const questionKey = question?.id ?? `${currentPassage}-${currentQuestion}`;
+  const canGoNext = Boolean(answeredQuestions[questionKey]);
 
   // Progress across all questions in all passages
   const totalQuestions = test.passages.reduce((a, p) => a + p.questions.length, 0);
@@ -137,6 +154,8 @@ const LessonMode = () => {
 
   // ── Navigate to next question / passage ──
   const goNext = () => {
+    if (!canGoNext) return;
+
     const hasMoreQuestions = currentQuestion < passage.questions.length - 1;
     const hasMorePassages  = currentPassage  < test.passages.length - 1;
 
@@ -154,6 +173,13 @@ const LessonMode = () => {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
     const userMsg = input.trim();
+    const currentQuestionKey = question?.id ?? `${currentPassage}-${currentQuestion}`;
+
+    setAnsweredQuestions(prev => ({
+      ...prev,
+      [currentQuestionKey]: true,
+    }));
+
     setInput("");
     setMessages(prev => [...prev, { role: "user", text: userMsg }]);
     setIsLoading(true);
@@ -189,11 +215,13 @@ const LessonMode = () => {
   };
 
   return (
-    <div className="test-page">
+    <div className="test-page explore-page">
 
       {/* ── Top bar ── */}
       <div className="explore-topbar">
-        <button className="back-btn" onClick={() => navigate(-1)}>←</button>
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          <img src="/assets/backbtn.png" alt="Back" />
+        </button>
         <ProgressBar current={currentNumber} total={totalQuestions} />
       </div>
 
@@ -209,14 +237,14 @@ const LessonMode = () => {
           input={input}
           onInput={setInput}
           onSend={handleSend}
+          avatarSrc="/assets/taptap.png"
           isLoading={isLoading}
         />
       </div>
 
       {/* ── Actions ── */}
-      <div className="explore-actions">
-        <button className="action-btn-skip" onClick={() => navigate(-1)}>Skip</button>
-        <button className="action-btn-next" onClick={goNext}>Next</button>
+      <div className="lesson-actions">
+        <button className="action-btn-next" onClick={goNext} disabled={!canGoNext}>Next</button>
       </div>
 
     </div>

@@ -77,6 +77,7 @@ const Login = ({ onLoginSuccess }) => {
             value={formData.password}
             onChange={handleChange}
             className="input"
+            style={styles.input}
             required
           />
           <p style={styles.linkTextSmall}>Forgot password? Click here</p>
@@ -105,14 +106,16 @@ const styles = {
     margin: '70px 0 10px 0',
   },
   input: { 
-    marginBottom: '15px'
+    height: '36px',
+    marginBottom: '15px',
+    width: '335px',
   },
   title: { 
     fontSize: '25px', 
     color: '#6C530E', 
     marginBottom: '30px', 
     alignSelf: 'flex-start', 
-    paddingLeft: '130px', 
+    paddingLeft: '115px', 
     fontWeight: '500' 
   },
   form: { 

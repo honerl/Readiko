@@ -164,7 +164,7 @@ export const EXPLORE_SESSION = {
       id: 1,
       title: "Community Power",
       content:
-        "During the typhoon, the villagers helped each other rebuild homes.",
+        "After a week of heavy rain, the river climbed over its banks and flooded the small town. At sunrise, neighbors met in the school gym to plan what to do first. Some cooked warm meals, while others cleared fallen branches from the roads. Teenagers carried clean water to older residents, and local carpenters repaired broken doors before nightfall. Even children helped by sorting donated clothes and writing labels for each family. By the third day, the streets were still muddy, but hope felt stronger than fear. Working side by side, the town discovered that shared effort could turn disaster into recovery and strangers into trusted friends. Their recovery became a lesson remembered every storm season: unity saves resources and hearts.",
       questions: [
         {
           id: 301,

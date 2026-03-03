@@ -9,6 +9,12 @@ const TeacherActivities = ({ cls, onBack }) => {
   const [showCreate, setShowCreate] = useState(false);
   const [showAddPassage, setShowAddPassage] = useState(false); // ← was missing
   const [passages, setPassages] = useState([]);
+  
+  // New features
+  const [activeTab, setActiveTab] = useState("activities");
+  const [students, setStudents] = useState([]);
+  const [loadingStudents, setLoadingStudents] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const [form, setForm] = useState({
     topic: "",
@@ -17,6 +23,13 @@ const TeacherActivities = ({ cls, onBack }) => {
     timeLimit: "While the activity is still open",
     testType: "",
   });
+
+  const getOrdinal = (n) => {
+    if (n === 1) return "st";
+    if (n === 2) return "nd";
+    if (n === 3) return "rd";
+    return "th";
+  };
 
   useEffect(() => {
     if (!cls?.c_id) return;
@@ -38,6 +51,39 @@ const TeacherActivities = ({ cls, onBack }) => {
 
     fetchActivities();
   }, [cls?.c_id]);
+
+  useEffect(() => {
+  if (!cls?.c_id || activeTab !== "records") return;
+
+  const fetchStudents = async () => {
+    try {
+      setLoadingStudents(true);
+      console.log("[TeacherActivities] Fetching students for class:", cls.c_id);
+
+      const res = await apiFetch(`/classes/${cls.c_id}/students`);
+      if (!res.ok) throw new Error("Failed to fetch students");
+
+      const data = await res.json();
+      console.log("[TeacherActivities] Students loaded:", data);
+
+      // Sort by average descending and compute rank
+      const sorted = [...data].sort((a, b) => b.average - a.average);
+
+      const ranked = sorted.map((student, index) => ({
+        ...student,
+        rank: index + 1,
+      }));
+
+      setStudents(ranked);
+      } catch (err) {
+        console.error("[TeacherActivities] Failed to load students:", err);
+      } finally {
+        setLoadingStudents(false);
+      }
+    };
+
+    fetchStudents();
+  }, [cls?.c_id, activeTab]);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -128,6 +174,7 @@ const TeacherActivities = ({ cls, onBack }) => {
     setShowAddPassage(false);
     setPassages([]);
   };
+  
 
   return (
     <div className="teacher-activities-container">
@@ -157,36 +204,102 @@ const TeacherActivities = ({ cls, onBack }) => {
         </div>
 
         <div className="tabs">
-          <span className="active-tab">Activities</span>
-          <span>Class Record</span>
+          <span
+            className={activeTab === "activities" ? "active-tab" : ""}
+            onClick={() => setActiveTab("activities")}
+          >
+            Activities
+          </span>
+          <span
+            className={activeTab === "records" ? "active-tab" : ""}
+            onClick={() => setActiveTab("records")}
+          >
+            Class Record
+          </span>
         </div>
 
         <div className="activities-container">
-          {loadingActivities ? (
-            <p>Loading activities...</p>
-          ) : activities.length === 0 ? (
-            <p style={{ color: "#888" }}>No activities yet. Create one!</p>
-          ) : (
-            activities.map((a) => (
-              <div key={a.a_id} className="activity-card" style={{ marginBottom: "12px" }}>
-                <div className="activity-left">
-                  <h3>{a.topic}</h3>
-                  <p>Open {formatDate(a.open_date)}</p>
-                  <p>Due {formatDate(a.close_date)}</p>
-                </div>
-                <div className="activity-right">
-                  <span className="points">{a.type_of_activity || "—"}</span>
-                  <button className="review-btn">Review</button>
-                </div>
-              </div>
-            ))
-          )}
+          {activeTab === "activities" ? (
+            <>
+              {loadingActivities ? (
+                <p>Loading activities...</p>
+              ) : activities.length === 0 ? (
+                <p style={{ color: "#888" }}>No activities yet. Create one!</p>
+              ) : (
+                activities.map((a) => (
+                  <div key={a.a_id} className="activity-card" style={{ marginBottom: "12px" }}>
+                    <div className="activity-left">
+                      <h3>{a.topic}</h3>
+                      <p>Open {formatDate(a.open_date)}</p>
+                      <p>Due {formatDate(a.close_date)}</p>
+                    </div>
+                    <div className="activity-right">
+                      <span className="points">{a.type_of_activity || "—"}</span>
+                      <button className="review-btn">Review</button>
+                    </div>
+                  </div>
+                ))
+              )}
 
-          <div className="create-btn-wrapper">
-            <button className="create-btn" onClick={() => setShowCreate(true)}>
-              + Create Activity
-            </button>
-          </div>
+              <div className="create-btn-wrapper">
+                <button className="create-btn" onClick={() => setShowCreate(true)}>
+                  + Create Activity
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {loadingStudents ? (
+                <p>Loading students...</p>
+              ) : students.length === 0 ? (
+                <p style={{ color: "#888" }}>No students enrolled.</p>
+              ) : (
+                students.map((s) => (
+                  <div key={s.uid} className="record-card">
+                    <div className="record-left">
+                      <div className="avatar-circle" />
+                      <div>
+                        <strong>{s.lname}</strong>
+                        <div style={{ fontSize: "0.85rem", color: "#666" }}>
+                          {s.fname}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="record-middle">
+                      <div>{s.average?.toFixed(2) ?? "—"}</div>
+                      <div>{s.rank}{getOrdinal(s.rank)}</div>
+                    </div>
+
+                    <div className="record-right">
+                      <button
+                        className="menu-btn"
+                        onClick={() =>
+                          setOpenMenuId(openMenuId === s.u_id ? null : s.u_id)
+                        }
+                      >
+                        ⋮
+                      </button>
+
+                      {openMenuId === s.u_id && (
+                        <div className="dropdown-menu">
+                          <div onClick={() => alert("Open class profile")}>
+                            Class Profile
+                          </div>
+                          <div
+                            style={{ color: "red" }}
+                            onClick={() => handleRemoveStudent(s.u_id)}
+                          >
+                            Remove
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </>
+          )}
         </div>
       </div>
 

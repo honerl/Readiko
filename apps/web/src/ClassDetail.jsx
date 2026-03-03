@@ -306,8 +306,8 @@ const styles = {
     textAlign: 'left',
     display: 'flex',
     alignItems: 'center',
-    margin: 0,
   },
+
   typeBadge: {
     height: '18px',
     width: '60px',

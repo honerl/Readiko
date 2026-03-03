@@ -3,19 +3,20 @@ import "./TeacherActivities.css";
 import { apiFetch } from "./services/api";
 import AddPassage from "./AddPassage";
 import { supabase } from "./services/supabaseClient";
+import StudentStatistics from "./StudentStatistics";
 
 const TeacherActivities = ({ cls, onBack }) => {
   const [activities, setActivities] = useState([]);
   const [loadingActivities, setLoadingActivities] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
-  const [showAddPassage, setShowAddPassage] = useState(false); // ← was missing
+  const [showAddPassage, setShowAddPassage] = useState(false);
   const [passages, setPassages] = useState([]);
-  
-  // New features
+
   const [activeTab, setActiveTab] = useState("activities");
   const [students, setStudents] = useState([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null); // used for profile overlay
 
   const [form, setForm] = useState({
     topic: "",
@@ -54,28 +55,26 @@ const TeacherActivities = ({ cls, onBack }) => {
   }, [cls?.c_id]);
 
   useEffect(() => {
-  if (!cls?.c_id || activeTab !== "records") return;
+    if (!cls?.c_id || activeTab !== "records") return;
 
-  const fetchStudents = async () => {
-    try {
-      setLoadingStudents(true);
-      console.log("[TeacherActivities] Fetching students for class:", cls.c_id);
+    const fetchStudents = async () => {
+      try {
+        setLoadingStudents(true);
+        console.log("[TeacherActivities] Fetching students for class:", cls.c_id);
 
-      const res = await apiFetch(`/classes/${cls.c_id}/students`);
-      if (!res.ok) throw new Error("Failed to fetch students");
+        const res = await apiFetch(`/classes/${cls.c_id}/students`);
+        if (!res.ok) throw new Error("Failed to fetch students");
 
-      const data = await res.json();
-      console.log("[TeacherActivities] Students loaded:", data);
+        const data = await res.json();
+        console.log("[TeacherActivities] Students loaded:", data);
 
-      // Sort by average descending and compute rank
-      const sorted = [...data].sort((a, b) => b.average - a.average);
+        const sorted = [...data].sort((a, b) => b.average - a.average);
+        const ranked = sorted.map((student, index) => ({
+          ...student,
+          rank: index + 1,
+        }));
 
-      const ranked = sorted.map((student, index) => ({
-        ...student,
-        rank: index + 1,
-      }));
-
-      setStudents(ranked);
+        setStudents(ranked);
       } catch (err) {
         console.error("[TeacherActivities] Failed to load students:", err);
       } finally {
@@ -117,7 +116,6 @@ const TeacherActivities = ({ cls, onBack }) => {
       const newActivity = await response.json();
       console.log("[TeacherActivities] Activity created:", newActivity);
 
-      // Save passages and questions
       for (const passage of passages) {
         const passageRes = await apiFetch("/passages", {
           method: "POST",
@@ -179,8 +177,20 @@ const TeacherActivities = ({ cls, onBack }) => {
     setShowCreate(false);
     setShowAddPassage(false);
     setPassages([]);
+    setSelectedStudent(null);
   };
-  
+
+  // click handler for activity card (mimic student behaviour)
+  const handleActivityClick = (a) => {
+    // TODO: navigate or open details
+    console.log("[TeacherActivities] card clicked", a);
+  };
+
+  const handleReviewClick = (e, a) => {
+    e.stopPropagation();
+    console.log("[TeacherActivities] review button clicked", a);
+    // additional logic can go here
+  };
 
   const handleLogout = async () => {
     try {
@@ -194,13 +204,12 @@ const TeacherActivities = ({ cls, onBack }) => {
     <div className="teacher-activities-container">
       {/* Sidebar */}
       <aside className="student-sidebar">
-        <img src={'/assets/logo2.png'} alt="ReadiKo Logo" className="sidebar-logo" />
+        <img src="/assets/logo2.png" alt="ReadiKo Logo" className="sidebar-logo" />
 
         <nav className="sidebar-nav">
           <select className="sidebar-select" defaultValue="classes">
             <option value="classes">Classes</option>
           </select>
-
           <button className="sidebar-link">Profile</button>
         </nav>
 
@@ -213,11 +222,15 @@ const TeacherActivities = ({ cls, onBack }) => {
 
       {/* Main Content */}
       <div className="main-content">
+        {/* separate back button container */}
+        <div className="back-container">
+          <button className="back-btn" onClick={onBack} aria-label="Back">
+            <img src="/assets/backbtn.png" alt="Back" />
+          </button>
+        </div>
+
         <div className="class-header">
           <div>
-            <button onClick={onBack} style={{ marginBottom: "0.5rem", cursor: "pointer" }}>
-              ← Back
-            </button>
             <h1>{cls?.name}</h1>
             <p>{cls?.description}</p>
           </div>
@@ -239,29 +252,47 @@ const TeacherActivities = ({ cls, onBack }) => {
         </div>
 
         <div className="activities-container">
-          {loadingActivities ? (
-            <p>Loading activities...</p>
-          ) : activities.length === 0 ? (
-            <p style={{ color: "#888" }}>No activities yet. Create one!</p>
-          ) : (
-            activities.map((a) => (
-              <div key={a.a_id} className="activity-card">
-                <div className="activity-top">
-                  <h3>{a.topic}</h3>
-                  <p className="activity-status">
-                    Status: <span>{getActivityStatus(a.close_date)}</span>
-                  </p>
-                  <p className="activity-due">Due {formatDate(a.close_date)}</p>
-                </div>
+          {activeTab === "activities" ? (
+            <>
+              {loadingActivities ? (
+                <p>Loading activities...</p>
+              ) : activities.length === 0 ? (
+                <p style={{ color: "#888" }}>No activities yet. Create one!</p>
+              ) : (
+                activities.map((a) => (
+                  <div
+                    key={a.a_id}
+                    className="activity-card"
+                    onClick={() => handleActivityClick(a)}
+                  >
+                    <div className="activity-left">
+                      <h3 className="activity-title">{a.topic}</h3>
+                    </div>
 
-                <div className="activity-bottom">
-                  <div className="activity-meta">
-                    <p>Open {formatDate(a.open_date)}</p>
-                    <p>Type: {a.type_of_activity || "—"}</p>
+                    <div className="activity-centre">
+                      <div className="activity-status">
+                        Status: <span>{getActivityStatus(a.close_date)}</span>
+                      </div>
+                      <div className="activity-counts">
+                        Done: {a.done ?? 0} | Pending: {a.pending ?? 0}
+                      </div>
+                      <div className="activity-timeLimit">
+                        Time limit: {a.time_limit || "none"}
+                      </div>
+                    </div>
+
+                    <div className="activity-right">
+                      <div className="activity-due">Due {formatDate(a.close_date)}</div>
+                      <button
+                        className="review-btn"
+                        onClick={(e) => handleReviewClick(e, a)}
+                      >
+                        View
+                      </button>
+                    </div>
                   </div>
-                  <button className="review-btn">View</button>
-                </div>
-              </div>
+                ))
+              )}
             </>
           ) : (
             <>
@@ -299,7 +330,10 @@ const TeacherActivities = ({ cls, onBack }) => {
 
                       {openMenuId === s.u_id && (
                         <div className="dropdown-menu">
-                          <div onClick={() => alert("Open class profile")}>
+                          <div onClick={() => {
+                              setSelectedStudent(s);
+                              setOpenMenuId(null);
+                            }}>
                             Class Profile
                           </div>
                           <div
@@ -317,16 +351,32 @@ const TeacherActivities = ({ cls, onBack }) => {
             </>
           )}
         </div>
+
+        {/* create button outside scrollable list */}
+        {activeTab === "activities" && (
+          <div className="create-btn-wrapper">
+            <button className="create-btn" onClick={() => setShowCreate(true)}>
+              + Create Activity
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Overlay */}
-      {(showCreate || showAddPassage) && (
+      {(showCreate || showAddPassage || selectedStudent) && (
         <div className="ta-overlay" onClick={closeAll}>
           {showAddPassage ? (
             <AddPassage
               onBack={() => setShowAddPassage(false)}
               onAdd={handlePassageAdded}
             />
+          ) : selectedStudent ? (
+            <aside className="ta-drawer" style={{width:'min(600px,90vw)'}} onClick={(e) => e.stopPropagation()}>
+              <button className="ta-back" onClick={() => setSelectedStudent(null)} aria-label="Back">
+                <img src="/assets/backbtn.png" alt="Back" />
+              </button>
+              <StudentStatistics student={selectedStudent} />
+            </aside>
           ) : (
             <aside className="ta-drawer" onClick={(e) => e.stopPropagation()}>
               <div className="ta-drawerHeader">

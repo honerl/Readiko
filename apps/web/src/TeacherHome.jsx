@@ -12,6 +12,9 @@ export default function TeacherHome({ user }) {
   const [showCreate, setShowCreate] = useState(false);
   const [currentClass, setCurrentClass] = useState(null);
 
+  // state for which class card currently has its menu open (c_id or null)
+  const [menuOpenFor, setMenuOpenFor] = useState(null);
+
   const [form, setForm] = useState({
     className: "",
     description: "",
@@ -59,6 +62,13 @@ export default function TeacherHome({ user }) {
 
     fetchTeacherClasses();
   }, [user?.id]);
+
+  // close any open menu when clicking outside
+  useEffect(() => {
+    const handleDocClick = () => setMenuOpenFor(null);
+    document.addEventListener("click", handleDocClick);
+    return () => document.removeEventListener("click", handleDocClick);
+  }, []);
 
   const openCreate = () => setShowCreate(true);
   const closeCreate = () => setShowCreate(false);
@@ -161,17 +171,39 @@ export default function TeacherHome({ user }) {
                 <div className="th-classDesc">{c.description}</div>
                 <div className="th-classTeacher">{user.email}</div>
 
-                <button
-                  className="th-copyBtn"
-                  onClick={(e) => {
-                    e.stopPropagation(); // ← prevent card click when copying
-                    navigator.clipboard.writeText(c.class_code)
-                      .then(() => alert(`Class code "${c.class_code}" copied!`))
-                      .catch((err) => console.error("Failed to copy class code:", err));
-                  }}
-                >
-                  Copy Class Code
-                </button>
+                {/* three-dot menu */}
+                <div className="th-cardMenu" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    className="th-menuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMenuOpenFor((prev) => (prev === c.c_id ? null : c.c_id));
+                    }}
+                    aria-label="Open class menu"
+                  >
+                    ⋮
+                  </button>
+                  {menuOpenFor === c.c_id && (
+                    <div className="th-menuOptions" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard
+                            .writeText(c.class_code)
+                            .then(() => alert(`Class code "${c.class_code}" copied!`))
+                            .catch((err) => console.error("Failed to copy class code:", err));
+                          setMenuOpenFor(null);
+                        }}
+                      >
+                        Class Code
+                        <img
+                          src="/assets/link.png"
+                          alt="link"
+                          className="th-menuIcon"
+                        />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
 

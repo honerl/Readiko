@@ -19,7 +19,7 @@ class Activity(ActivityBase):
         "from_attributes": True
     }
 class ActivityUpdate(BaseModel):
-    topic: Optional[str] = None
-    open_date: Optional[datetime] = None
-    close_date: Optional[datetime] = None
-    type_of_activity: Optional[str] = None
+    topic: str | None = None
+    open_date: datetime | None = None
+    close_date: datetime | None = None
+    type_of_activity: str | None = None

@@ -5,120 +5,181 @@
   background: #f3e9c9;
 }
 
-/* Sidebar */
-.th-sidebar {
-  width: 220px;
-  background: #f6dca8;
-  border-right: 2px solid #d6a85b;
-  padding: 18px 14px;
-}
-
-.th-brand {
-  font-weight: 900;
-  font-size: 20px;
-  color: #1f4d1f;
-  margin-bottom: 26px;
-}
-
-.th-nav {
+/* Sidebar - using StudentHomepage styles */
+.student-sidebar {
+  width: 200px;
+  background-color: #FFE7BA;
+  padding: 40px 20px;
+  border-right: 3px solid #E2BC45;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  flex-shrink: 0;
 }
 
-.th-select {
-  width: 120px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #c9b27a;
-  background: #f9e7bf;
+.sidebar-logo {
+  color: #153204;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 18px;
+  text-align: center;
 }
 
-.th-link {
-  text-align: left;
-  background: transparent;
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sidebar-link {
+  background: none;
   border: none;
-  padding: 8px 10px;
-  border-radius: 8px;
+  text-align: left;
+  font-size: 14px;
+  color: #153204;
   cursor: pointer;
-  color: #2a2a2a;
+  padding: 7px 28px;
+  border-radius: 4px;
+  transition: 0.2s;
+  font-weight: bold;
 }
 
-.th-link:hover {
-  background: rgba(255, 255, 255, 0.35);
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-select {
+  border-radius: 4px;
+  padding: 7px 24px;
+  border: transparent;
+  background-color: transparent;
+  font-weight: bold;
+  cursor: pointer;
+  color: #153204;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.sidebar-select:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* remove black focus outlines on sidebar items */
+.sidebar-link:focus,
+.sidebar-select:focus {
+  outline: none;
+  border-color: #d4c4a8;
+}
+
+/* footer area for logout button */
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+}
+
+/* extra styling for logout link */
+.logout-link {
+  color: #c4554a;
+}
+
+.logout-link:hover {
+  background-color: rgba(255, 0, 0, 0.1);
 }
 
 /* Content */
 .th-content {
   flex: 1;
-  padding: 28px 28px 40px;
-  background: #f7f2e4;
+  padding: 60px 300px 40px 120px;
+  background-image: url('/assets/background2.jpeg');
+  background-size: cover;
+  background-position: center bottom;
   position: relative;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .th-title {
-  font-size: 22px;
-  font-weight: 800;
-  margin: 0 0 18px;
+  font-size: 32px;
+  color: #153204;
+;
+  margin: 0 0 20px;
+  font-weight: normal;
 }
 
 .th-panel {
-  width: min(860px, 100%);
-  background: rgba(255, 255, 255, 0.45);
-  border: 1px solid #cdbb8e;
-  border-radius: 12px;
-  padding: 22px;
-  min-height: 520px;
+  width: 100%;
+  height: calc(100% - 100px);
+  background: #FFFDF5;
+  border: 1px solid #BAAAAA;
+  border-radius: 14px;
+  box-shadow: 0 4px 4px #BAAAAA;
+  padding: 35px 48px;
+  box-sizing: border-box;
 }
 
 /* Grid */
 .th-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(240px, 1fr));
-  gap: 18px;
+  gap: 24px;
   align-items: start;
 }
 
 .th-classCard {
-  background: #f6e7c7;
-  border: 1px solid #bfa970;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+  background: #fcf0c8;
+  border: 1px solid #6C530E;
+  border-radius: 14px;
+  padding: 20px 25px;
+  box-shadow: 0 2px 4px #BAAAAA;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
 }
 
 .th-className {
-  font-weight: 900;
-  letter-spacing: 0.4px;
-  margin-bottom: 8px;
+  font-size: 24px;
+  color: #4a3b20;
+  margin: 0 0 8px;
+  font-weight: normal;
 }
 
 .th-classDesc {
-  font-size: 11px;
-  color: #333;
-  margin-bottom: 14px;
-  min-height: 28px;
+  font-size: 16px;
+  color: #7a6b4a;
+  margin: 0 0 15px;
+  min-height: 44px;
 }
 
 .th-classTeacher {
-  font-size: 11px;
+  font-size: 14px;
   text-align: right;
-  color: #222;
+  color: #6C530E;
+  font-style: italic;
+  font-weight: bold;
+  margin-top: auto;
 }
 
 /* + Create card */
 .th-createCard {
-  height: 106px;
-  border-radius: 12px;
-  border: 2px dashed #bfa970;
-  background: transparent;
+  min-height: 120px;
+  border-radius: 14px;
+  border: 2px dashed #8d7b5f;
+  background: #EEE7D7;
   cursor: pointer;
-  font-weight: 700;
-  color: #333;
+  font-weight: bold;
+  color: #6C530E;
+  font-size: 18px;
+  box-shadow: 0 2px 4px #BAAAAA;
 }
 
 .th-createCard:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #E0D9CB;
+  border-color: #6C530E;
+  color: #6C530E;
+}
+
+.th-createCard:focus {
+  outline: none;
 }
 
 /* Overlay + drawer */
@@ -132,104 +193,225 @@
 }
 
 .th-drawer {
-  width: min(520px, 94vw);
-  height: 100%;
-  background: #fbf8ef;
+  width: min(700px, 94vw);
+  height: 100dvh;
+  max-height: 100dvh;
+  background: #FFFDF5;
   border-top-left-radius: 24px;
   border-bottom-left-radius: 24px;
-  padding: 18px 18px 26px;
-  overflow: auto;
+  padding: 28px 36px 40px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .th-drawerHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
 .th-back {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  background: #fff;
+  width: 20px;
+  height: 20px;
+  border-radius: 8px;
+  border: none;
+  background: #FFFDF5;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.08s ease;
+}
+
+.th-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: filter 0.2s ease;
+}
+
+.th-back:hover img {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(82%) saturate(1489%) hue-rotate(330deg) brightness(98%) contrast(90%);
+}
+
+.th-back:focus,
+.th-back:focus-visible,
+.th-back:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.th-back:active {
+  transform: scale(0.92);
 }
 
 .th-drawerTitle {
-  font-weight: 900;
-  color: #222;
+  font-weight: bold;
+  font-size: 20px;
+  color: #4a3b20;
 }
 
 /* Form */
 .th-form {
   display: grid;
-  gap: 18px;
+  gap: 32px;
 }
 
 .th-label {
   display: grid;
-  gap: 8px;
-  font-size: 12px;
-  color: #333;
-  font-weight: 700;
+  gap: 12px;
+  font-size: 16px;
+  color: #4a3b20;
+  font-weight: bold;
 }
 
 .th-inputLine {
-  height: 40px;
+  height: 36px;
   border: none;
-  border-bottom: 2px solid #cfcfcf;
+  border-bottom: 2px solid #BAAAAA;
   background: transparent;
   outline: none;
-  font-size: 14px;
-  padding: 0 4px;
+  font-size: 24px;
+  padding: 4px 4px 8px 12px;
+  color: #4a3b20;
+  font-weight: bold;
+}
+
+.th-inputLine:focus {
+  border-bottom-color: #6C530E;
+}
+
+.th-inputLine::placeholder {
+  font-weight: bold;
+  color: #AAAAAA;
 }
 
 .th-textarea {
-  min-height: 90px;
-  border-radius: 12px;
-  border: 1px solid #7e7e7e;
-  padding: 12px;
+  min-height: 100px;
+  border-radius: 14px;
+  border: 1.5px solid #BAAAAA;
+  padding: 14px 16px;
   outline: none;
   resize: none;
   background: #fff;
+  font-size: 16px;
+  color: #4a3b20;
+  font-family: inherit;
+}
+
+.th-textarea:focus {
+  border-color: #6C530E;
+}
+
+.th-textarea::placeholder {
+  color: #AAAAAA;
 }
 
 .th-selectWide {
-  height: 46px;
-  border-radius: 12px;
-  border: 1px solid #7e7e7e;
+  height: 52px;
+  border-radius: 14px;
+  border: 1.5px solid #BAAAAA;
   background: #fff;
-  padding: 0 12px;
+  padding: 0 16px;
+  font-size: 16px;
+  color: #4a3b20;
+  cursor: pointer;
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="%234a3b20" d="M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.th-selectWide:hover {
+  background-color: #fff;
+  border-color: #BAAAAA;
+}
+
+.th-selectWide:focus {
+  outline: none;
+  border-color: #6C530E;
+}
+
+.th-selectWide option {
+  background: #FFFDF5;
+  color: #4a3b20;
+  font-size: 15px;
+  padding: 10px 12px;
+}
+
+.th-selectWide option:checked {
+  background: #FFFDF5;
+  color: #4a3b20;
+  font-weight: 400;
+}
+
+.th-selectWide option:hover {
+  background: #FFFDF5;
+}
+
+.th-selectWide option:focus {
+  background: #FFFDF5;
 }
 
 .th-inputBox {
-  height: 46px;
-  border-radius: 12px;
-  border: 1px solid #7e7e7e;
+  height: 52px;
+  border-radius: 14px;
+  border: 1.5px solid #BAAAAA;
   background: #fff;
-  padding: 0 12px;
+  padding: 0 16px;
   outline: none;
+  font-size: 16px;
+  color: #4a3b20;
+}
+
+.th-inputBox:focus {
+  border-color: #6C530E;
+}
+
+.th-inputBox::placeholder {
+  color: #d4c4a8;
 }
 
 .th-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 8px;
+  margin-top: 20px;
 }
 
 .th-createBtn {
-  background: #ef6b63;
+  background: #EE6A60;
   border: none;
   color: #fff;
-  font-weight: 800;
-  border-radius: 12px;
-  padding: 12px 40px;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 14px;
+  padding: 14px 48px;
   cursor: pointer;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 4px #BAAAAA;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s ease, transform 0.08s ease;
 }
 
 .th-createBtn:hover {
-  filter: brightness(0.97);
+  opacity: 0.9;
+}
+
+.th-createBtn:focus,
+.th-createBtn:focus-visible,
+.th-createBtn:active {
+  outline: none;
+  box-shadow: 0 2px 4px #BAAAAA;
+}
+
+.th-createBtn:active {
+  transform: scale(0.97);
 }

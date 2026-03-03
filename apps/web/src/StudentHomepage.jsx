@@ -134,7 +134,6 @@ const styles = {
   container: {
     display: 'flex',
     height: '100vh',
-    backgroundColor: '#fdf7e7',
     fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
     overflow: 'hidden',
     width: '100%'
@@ -149,6 +148,9 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     boxSizing: 'border-box',
+    backgroundImage: "url('/assets/background2.jpeg')",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center bottom',
   }
 };
 

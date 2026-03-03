@@ -46,11 +46,13 @@ const ExamMode = () => {
   const handleAnswer = (questionId, value) =>
     setAnswers(prev => ({ ...prev, [questionId]: value }));
 
-  const isAnswered = (idx) =>
-    items[idx].questions.some(q => answers[q.id]?.trim());
+  const isAnswered = (idx) => {
+    const questions = items[idx].questions;
+    return questions.length > 0 && questions.every(q => answers[q.id]?.trim());
+  };
 
   return (
-    <div className="test-page">
+    <div className="test-page exam-page">
 
       {/* Outer row: left column + sidebar */}
       <div className="exam-layout">
@@ -60,7 +62,9 @@ const ExamMode = () => {
 
           {/* Topbar inside the left column */}
           <div className="exam-topbar">
-            <button className="back-btn" onClick={() => navigate(-1)}>&#8592;</button>
+            <button className="back-btn" onClick={() => navigate(-1)}>
+              <img src="/assets/backbtn.png" alt="Back" />
+            </button>
             <div className="exam-item-header">
               <span className="exam-item-title">Item {currentItem + 1}</span>
               <span className="exam-item-points">{item.points ?? 10} points</span>
@@ -70,10 +74,12 @@ const ExamMode = () => {
           {/* Content card directly below the topbar */}
           <div className="exam-content-card">
             <div className="exam-passage-col">
-              <h2>{item.title}</h2>
-              {Array.isArray(item.content)
-                ? item.content.map((para, i) => <p key={i}>{para}</p>)
-                : <p>{item.content}</p>}
+              <div className="exam-passage-content">
+                <h2>{item.title}</h2>
+                {Array.isArray(item.content)
+                  ? item.content.map((para, i) => <p key={i}>{para}</p>)
+                  : <p>{item.content}</p>}
+              </div>
             </div>
             <div className="exam-questions-col">
               {item.questions.map((q) => (
@@ -111,11 +117,11 @@ const ExamMode = () => {
                 </button>
               ))}
             </div>
-          </div>
 
-          <div className="exam-sidebar-card">
-            <div className="exam-timer-label">Time left:</div>
-            <div className="exam-timer-value">{formatTime(timeLeft)}</div>
+            <div className="exam-timer-block">
+              <div className="exam-timer-label">Time left:</div>
+              <div className="exam-timer-value">{formatTime(timeLeft)}</div>
+            </div>
           </div>
         </div>
 

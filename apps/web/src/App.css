@@ -41,7 +41,7 @@
 
 .input {
   padding-left: 20px;
-  border-radius: 50px;
+  border-radius: 14px;
   height: 36px;
   border: 1px solid #AAAAAA;
   background-color: #ffffff;
@@ -87,16 +87,30 @@
   width: 360px;
   height: 52px;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.08s ease;
   display: flex;
   justify-content: center; 
   align-items: center;
   text-align: center;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn_primary:hover {
   opacity: 0.9;
   border: 0;
+}
+
+.btn_primary:focus,
+.btn_primary:focus-visible,
+.btn_primary:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn_primary:active {
+  transform: scale(0.97);
 }
 
 .btn_secondary {
@@ -234,4 +248,162 @@
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ============================================================
+   RoleSelection.css
+   ============================================================ */
+
+/* ── Role button base ── */
+.role-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 190px;
+  height: 76px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  padding-left: 20px;
+  margin-bottom: 36px;
+  border: 1.5px solid #ccc;
+  background-color: rgba(255, 255, 255, 0.6);
+  color: #2a1f0e;
+
+  /* smooth all transitions */
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+/* ── Icon ── */
+.role-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.role-btn-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: transparent;
+  transition: filter 0.2s ease;
+  filter: none;
+}
+
+/* ── Idle hover ── */
+.role-btn:hover {
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: #aaa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* On hover: turn icon orange #EE6A60
+   Step-by-step:
+   1. brightness(0)       → make the icon fully black (normalizes any starting color)
+   2. saturate(100%)      → ensure clean base before colorizing
+   3. invert(52%)         → shift black toward a mid-grey base
+   4. sepia(44%)          → push toward warm brown-orange tones
+   5. saturate(800%)      → crank up to vivid orange
+   6. hue-rotate(320deg)  → dial hue to the red-orange of #EE6A60
+   7. brightness(1.05)    → final lightness nudge to match the exact shade
+*/
+.role-btn:hover span.role-btn-icon,
+.role-btn.is-selected span.role-btn-icon {
+  filter: none;
+}
+
+.role-btn:hover .role-btn-icon-img,
+.role-btn.is-selected .role-btn-icon-img {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(44%) saturate(800%) hue-rotate(320deg) brightness(1.05);
+}
+
+.role-btn:hover img.role-btn-icon,
+.role-btn.is-selected img.role-btn-icon {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(44%) saturate(800%) hue-rotate(320deg) brightness(1.05);
+}
+
+/* ── Idle active (click press) ── */
+.role-btn:active {
+  transform: translateY(0px) scale(0.97);
+  box-shadow: none;
+}
+
+/* ── Selected state ── */
+.role-btn.is-selected {
+  background-color: #fde8d8;
+  border: 2px solid #EE6A60;
+  color: #EE6A60;
+  box-shadow: 0 4px 14px rgba(238, 106, 96, 0.25);
+}
+
+/* ── Selected hover ── */
+.role-btn.is-selected:hover {
+  background-color: #fcd9c5;
+  transform: translateY(-2px);
+}
+
+/* ── Selected active press ── */
+.role-btn.is-selected:active {
+  transform: translateY(0px) scale(0.97);
+}
+
+/* ── Focus ring for keyboard accessibility ── */
+.role-btn:focus {
+  outline: none;
+  border-color: #d4c4a8;
+}
+
+.role-select-back-btn {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #2a1f0e;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #2a1f0e;
+  z-index: 10;
+  transition: background 0.15s, border-color 0.15s;
+  padding: 0;
+  outline: none;
+}
+
+.role-select-back-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  transition: filter 0.2s ease;
+}
+
+.role-select-back-btn:hover {
+  background: #fdf3e8;
+  border-color: #f06d5f;
+}
+
+.role-select-back-btn:hover img {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(82%) saturate(1489%) hue-rotate(330deg) brightness(98%) contrast(90%);
+}
+
+.role-select-back-btn:focus,
+.role-select-back-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
 }

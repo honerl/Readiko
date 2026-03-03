@@ -67,12 +67,12 @@ export default function TeacherHome({ user }) {
   };
 
   const gradeMap = {
-    "Grade 1": 1,
-    "Grade 2": 2,
-    "Grade 3": 3,
-    "Grade 4": 4,
-    "Grade 5": 5,
-    "Grade 6": 6,
+    "Grade 7": 7,
+    "Grade 8": 8,
+    "Grade 9": 9,
+    "Grade 10": 10,
+    "Grade 11": 11,
+    "Grade 12": 12,
   };
 
   const onCreate = async (e) => {
@@ -120,20 +120,22 @@ export default function TeacherHome({ user }) {
 
   return (
     <div className="th-page">
-      <aside className="th-sidebar">
-        <div className="th-brand">ReadiKo</div>
+      <aside className="student-sidebar">
+        <img src={'/assets/logo2.png'} alt="ReadiKo Logo" className="sidebar-logo" />
 
-        <nav className="th-nav">
-          <select className="th-select" defaultValue="classes">
+        <nav className="sidebar-nav">
+          <select className="sidebar-select" defaultValue="classes">
             <option value="classes">Classes</option>
           </select>
 
-          <button className="th-link">Profile</button>
-
-          <button className="th-link" onClick={handleLogout}>
-            Logout
-          </button>
+          <button className="sidebar-link">Profile</button>
         </nav>
+
+        <div className="sidebar-footer">
+          <button className="sidebar-link logout-link" onClick={handleLogout}>
+            Log Out
+          </button>
+        </div>
       </aside>
 
       <main className="th-content">
@@ -150,7 +152,7 @@ export default function TeacherHome({ user }) {
             ))}
 
             <button className="th-createCard" onClick={openCreate} type="button">
-              + Create Class
+              + Create Class  
             </button>
           </div>
         </section>
@@ -160,14 +162,12 @@ export default function TeacherHome({ user }) {
             <aside className="th-drawer" onClick={(e) => e.stopPropagation()}>
               <div className="th-drawerHeader">
                 <button className="th-back" onClick={closeCreate} aria-label="Back">
-                  ←
+                  <img src="/assets/backbtn.png" alt="Back" />
                 </button>
                 <div className="th-drawerTitle">Create Class</div>
               </div>
 
               <form className="th-form" onSubmit={onCreate}>
-                <label className="th-label">
-                  Class Name
                   <input
                     className="th-inputLine"
                     name="className"
@@ -175,7 +175,6 @@ export default function TeacherHome({ user }) {
                     onChange={onChange}
                     placeholder="Class Name"
                   />
-                </label>
 
                 <label className="th-label">
                   Description
@@ -196,24 +195,25 @@ export default function TeacherHome({ user }) {
                     value={form.gradeLevel}
                     onChange={onChange}
                   >
-                    <option>Grade 1</option>
-                    <option>Grade 2</option>
-                    <option>Grade 3</option>
-                    <option>Grade 4</option>
-                    <option>Grade 5</option>
-                    <option>Grade 6</option>
+                    <option>Grade 7</option>
+                    <option>Grade 8</option>
+                    <option>Grade 9</option>
+                    <option>Grade 10</option>
+                    <option>Grade 11</option>
+                    <option>Grade 12</option>
                   </select>
                 </label>
 
                 <label className="th-label">
                   Subject
-                  <input
-                    className="th-inputBox"
+                  <select
+                    className="th-selectWide"
                     name="subject"
                     value={form.subject}
                     onChange={onChange}
-                    placeholder="English"
-                  />
+                  >
+                    <option>English</option>
+                  </select>
                 </label>
 
                 <div className="th-actions">

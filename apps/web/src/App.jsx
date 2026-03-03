@@ -106,9 +106,9 @@ function App() {
                 : <Navigate to="/login" />
               } 
           />
-          <Route path="/exple" element={<ExamMode />} />
+          <Route path="/exre" element={<ExamMode />} />
           <Route path="/explore" element={<LessonMode />} />
-          <Route path="/exp" element={<ExploreScreen />} />
+          <Route path="/exre" element={<ExploreScreen />} />
 
           {/* Teacher Home Route (Protected) */}
           <Route 

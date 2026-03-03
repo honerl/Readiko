@@ -4,6 +4,8 @@ import PassageBlock from "./PassageBlock";
 import ChatPanel from "./ChatPanel";
 import StreakHeader from "./StreakHeader";
 import { EXPLORE_SESSION } from "./mockData";
+import "./Test.css";
+import "./App.css";
 
 const ExploreScreen = ({ user }) => {
   const { testId } = useParams();
@@ -60,10 +62,12 @@ const ExploreScreen = ({ user }) => {
   };
 
   return (
-    <div className="test-page">
+    <div className="test-page explore-page">
       {/* Top bar */}
       <div className="explore-topbar">
-        <button className="back-btn" onClick={() => navigate(-1)}>←</button>
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          <img src="/assets/backbtn.png" alt="Back" />
+        </button>
         <StreakHeader streak={streak} />
       </div>
 
@@ -79,6 +83,7 @@ const ExploreScreen = ({ user }) => {
           input={input}
           onInput={setInput}
           onSend={handleSend}
+          avatarSrc="/assets/taptap.png"
         />
       </div>
 

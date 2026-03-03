@@ -190,6 +190,10 @@ const Dashboard = ({
     {
       id: 'exp-1',
       title: 'Self-Paced Learning'
+    },
+    {
+      id: 'exp-2',
+      title: 'Cybersecurity Basics'
     }
   ];
 
@@ -283,7 +287,7 @@ const Dashboard = ({
                   <button
                     className="explore-start-btn"
                     style={styles.exploreBtn}
-                    onClick={() => { if (item.id === "exp-1") { navigate(`/explore/${encodeURIComponent(item.title)}`); } }}
+                    onClick={() => navigate(`/explore/${encodeURIComponent(item.title)}`)}
                   >
                     Start
                   </button>

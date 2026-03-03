@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ClassDetail = ({ cls, onBack }) => {
+  console.log("cls prop:", cls); // ← add this
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('ongoing');
@@ -19,7 +20,7 @@ const ClassDetail = ({ cls, onBack }) => {
     setLoading(true);
     try {
       // Use full backend URL with classroom_id
-      const res = await fetch(`http://localhost:8000/activities?classroom_id=${cls.id}`);
+      const res = await fetch(`http://localhost:8000/activities/?classroom_id=${cls.id}`);
 
       // Check response content type
       const contentType = res.headers.get('content-type');
@@ -29,11 +30,12 @@ const ClassDetail = ({ cls, onBack }) => {
       }
 
       const data = await res.json();
+      console.log("raw activity data:", data);
 
       // Map data for UI
       setActivities(
         data.map(a => ({
-          id: a.id, // or a.classroom_id if your table uses that
+          id: a.a_id, 
           title: a.topic,
           type: a.type_of_activity
             ? a.type_of_activity.charAt(0).toUpperCase() + a.type_of_activity.slice(1)
@@ -82,12 +84,22 @@ const ClassDetail = ({ cls, onBack }) => {
 
   // ── Navigation ──────────────────────────────────────────
   const handleItemClick = (item) => {
+    console.log("clicked item:", item);
     if (!item.id) return;
-    const base = `/class/${cls.id}/item/${item.id}`;
+
     if (item.progress >= 100) {
-      navigate(`${base}/review`);
+      navigate(`/class/${cls.id}/item/${item.id}/review`);
+      return;
+    }
+
+    const type = item.type?.toLowerCase();
+
+    if (type === "exam") {
+      navigate(`/exam/${item.id}`);
+    } else if (type === "lesson") {
+      navigate(`/lesson/${item.id}`);
     } else {
-      console.log('Item clicked (no real DB ID):', item);
+      console.log("Unknown activity type:", item.type);
     }
   };
 
@@ -306,7 +318,6 @@ const styles = {
     textAlign: 'left',
     display: 'flex',
     alignItems: 'center',
-    margin: 0,
   },
   typeBadge: {
     height: '18px',

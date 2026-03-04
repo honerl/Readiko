@@ -18,7 +18,7 @@ export default function TeacherHome({ user }) {
   const [form, setForm] = useState({
     className: "",
     description: "",
-    gradeLevel: "Grade 1",
+    gradeLevel: "Grade 7",
     subject: "English",
   });
 
@@ -111,7 +111,7 @@ export default function TeacherHome({ user }) {
       setForm({
         className: "",
         description: "",
-        gradeLevel: "Grade 1",
+        gradeLevel: "Grade 7",
         subject: "English",
       });
       closeCreate();
